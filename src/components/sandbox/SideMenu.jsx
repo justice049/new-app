@@ -1,47 +1,91 @@
-import React, { useState } from "react";
-//从antd引入Layout组件的子组件Sider
-import { Layout ,Menu,theme} from "antd";
-//引入antd的图标组件
+import React, { useState } from 'react'
+import { Layout, Menu, theme } from 'antd'
+import './index.css'
 import {
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
-} from '@ant-design/icons';
+  SettingOutlined,
+} from '@ant-design/icons'
+import { Switch } from 'antd'
+import SubMenu from 'antd/es/menu/SubMenu'
+import { useNavigate } from 'react-router-dom' // 引入 useNavigate
 
-//解构Layout
-const { Header, Content, Sider } = Layout;
+const { Header, Content, Sider } = Layout
 
+const menuList = [
+  {
+    key: '/home',
+    title:"首页",
+    icon: <UserOutlined />,
+  }, 
+  {
+    key: '/user-manage',
+    title:"用户管理",
+    icon: <UserOutlined />,
+    children:[
+      {
+        key: '/user-manage/list',
+        title:"用户列表",
+        icon: <UserOutlined />,
+      }
+    ]
+  },
+  {
+    key: '/right-manage',
+    title:"权限管理",
+    icon: <UserOutlined />,
+    children:[
+      {
+        key: '/right-manage/role/list',
+        title:"角色列表",
+        icon: <UserOutlined />,
+      },{
+        key: '/right-manage/right/list',
+        title:"权限列表",
+        icon: <UserOutlined />,
+      }
+    ]
+  }
+]
 
 function SideMenu() {
-    
-    const [collapsed, setCollapsed] = useState(false);
-    return (
-       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['1']}
-          items={[
-            {
-              key: '1',
-              icon: <UserOutlined />,
-              label: 'nav 1',
-            },
-            {
-              key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'nav 2',
-            },
-            {
-              key: '3',
-              icon: <UploadOutlined />,
-              label: 'nav 3',
-            },
-          ]}
-        />
-      </Sider>
-    );
+  const [collapsed, setCollapsed] = useState(false)
+  const navigate = useNavigate() // 使用 useNavigate 获取 navigate 函数
+
+  const onClick = (e) => {
+    console.log('click ', e)
+  }
+
+  const renderMenu = (menuList) => {
+    return menuList.map(item => {
+      if (item.children) {
+        return <SubMenu key={item.key} icon={item.icon} title={item.title}>
+          {renderMenu(item.children)}
+        </SubMenu>
+      }
+      return <Menu.Item key={item.key} icon={item.icon} onClick={() => {
+        navigate(item.key) // 使用 navigate 进行导航
+      }}>{item.title}</Menu.Item>
+    })
+  }
+
+  return (
+    <Sider trigger={null} collapsible collapsed={false}>
+      <div className="logo">新闻发布系统</div>
+      <div className="demo-logo-vertical" />
+      <Menu
+        theme="dark"
+        mode="inline"
+        defaultSelectedKeys={['1']}
+        onClick={onClick}
+        defaultOpenKeys={['sub1']}
+      >
+        {renderMenu(menuList)}
+      </Menu>
+    </Sider>
+  )
 }
 
-export default SideMenu;
+export default SideMenu
+   

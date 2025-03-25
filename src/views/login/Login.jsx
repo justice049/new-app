@@ -1,4 +1,5 @@
-function Login() {
+function Login(props) {
+    console.log(props)
     return (
         <div>
             Login page
