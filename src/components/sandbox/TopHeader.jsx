@@ -80,7 +80,10 @@ function TopHeader() {
           placement="bottomLeft"
           arrow
         >
-          <Button>🥺</Button>
+          <Space size={16} wrap>
+          <Avatar src={'/头像.jpg'} />
+        </Space>
+          {/* <Button>🥺</Button> */}
         </Dropdown>
         <Dropdown
           menu={{
@@ -89,31 +92,7 @@ function TopHeader() {
           placement="bottom"
           arrow
         ></Dropdown>
-        <Space size={16} wrap>
-          {/* <Avatar icon={<UserOutlined />} /> */}
-          {/* <Avatar>U</Avatar> */}
-          {/* <Avatar size={40}>USER</Avatar> */}
-          {/* <Avatar src={"./头像.jpg"} />
-           */}
-          {/* // ... existing code ... */}
-          <Avatar src={'c:/Users/Lenovo/my-app/public/头像.jpg'} />
-          {/* // ... existing code ... */}
-          {/* <Avatar src={<img src={"./头像.jpg"} alt="avatar" />} /> */}
-          {/* <Avatar
-      style={{
-        backgroundColor: '#fde3cf',
-        color: '#f56a00',
-      }}
-    >
-      U
-    </Avatar>
-    <Avatar
-      style={{
-        backgroundColor: '#87d068',
-      }}
-      icon={<UserOutlined />}
-    /> */}
-        </Space>
+
       </div>
 
       <Button
