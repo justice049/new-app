@@ -32,6 +32,8 @@ function NewSandbox() {
                         margin: '24px 16px',
                         padding: 24,
                         minHeight: 280,
+                        // 溢出隐藏
+                        overflow:'auto',
                         background: colorBgContainer,
                         borderRadius: borderRadiusLG,
                     }}
