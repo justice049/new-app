@@ -21,7 +21,8 @@ function UserList() {
   const [roleList, setroleList] = useState([])
   const [regionList, setregionList] = useState([])
   const [isUpdateVisible, setisUpdateVisible] = useState(false)
-  
+  const [isUpdateDisabled,setisUpdateDisabled] = useState(false)
+
   const updateForm = useRef(null)
   const addForm = useRef(null)
 
@@ -78,12 +79,7 @@ function UserList() {
       roleState:item.roleState
     })
   }
-
-  const handleUpdate = (item) => {
-    setOpen(true)
-    setFormInfo(item)
-  }
-
+ 
   const columns = [
     {
       title: '区域',
@@ -167,6 +163,21 @@ function UserList() {
       .catch((errInfo) => {
         console.log(errInfo)
       })
+  }
+
+  const handleUpdate = (item) => {
+    //更新要想办法让已有数据展示出来
+    setTimeout(() => {
+      setisUpdateVisible(true)
+      if(item.roleId === 1)
+      {
+        item.region = ""
+      }
+      else{
+        item.region = item.regionId
+      }
+      updateForm.current.setFieldsValue(item) 
+    })
   }
 
   const [open, setOpen] = useState(false)

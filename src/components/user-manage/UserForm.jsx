@@ -10,6 +10,8 @@ const UserForm = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     validateFields: () => form.validateFields(),
     resetFields: () => form.resetFields(),
+    // 新增 setFieldsValue 方法
+    setFieldsValue: (values) => form.setFieldsValue(values),
   }));
 
   const [isDisabled, setIsDisabled] = useState(false);
