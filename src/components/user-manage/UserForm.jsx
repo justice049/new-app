@@ -1,72 +1,79 @@
-import React,{useState,useEffect, forwardRef} from 'react';
-import { Button,Table, Tag,Modal,Popover, Switch,Form,Input,Radio,Select } from 'antd';
-import { EditOutlined,DeleteOutlined,ExclamationCircleOutlined } from '@ant-design/icons';
-import axios from 'axios';
-import { data } from 'react-router-dom';
-import Item from 'antd/es/list/Item';
-const { confirm } = Modal;
+import React, { forwardRef, useImperativeHandle } from 'react';
+import { Form, Input, Select } from 'antd';
 
 // 封装一下
-const UserForm=forwardRef((props,ref) => {
-    // 使用forwardRef传参ref
-    const onChange = (value) => {
-        console.log(`selected ${value}`);
-      };
-      const onSearch = (value) => {
-        console.log('search:', value);
-      };
+const UserForm = forwardRef((props, ref) => {
+    // 使用forwardRef 可以让子组件获取父组件的方法
+    const [form] = Form.useForm();
+
+  // 让外部 ref 访问 form 的方法
+  useImperativeHandle(ref, () => ({
+    validateFields: () => form.validateFields(),
+    resetFields: () => form.resetFields(),
+  }));
+
+  // 选择框事件
+  const onChange = (value) => {
+    console.log(`selected ${value}`);
+  };
+
   return (
-    <div>
-        <Form.Item
-          ref={ref}
-          name="username"
-          label="用户名"
-          rules={[{ required: true, message: 'Please input the title of collection!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item name="password" label="密码"  rules={[{ required: true, message: 'Please input the title of collection!' }]} >
-          <Input type="textarea" />
-        </Form.Item>
-        <Form.Item name="region" label="区域"  rules={[{ required: true, message: 'Please input the title of collection!' }]}>
+    <Form form={form} layout="vertical"> 
+      {/* 用户名 */}
+      <Form.Item
+        name="username"
+        label="用户名"
+        rules={[{ required: true, message: '请输入用户名' }]}
+      >
+        <Input placeholder="请输入用户名" />
+      </Form.Item>
+
+      {/* 密码 */}
+      <Form.Item
+        name="password"
+        label="密码"
+        rules={[{ required: true, message: '请输入密码' }]}
+      >
+        <Input.Password placeholder="请输入密码" />
+      </Form.Item>
+
+      {/* 区域选择 */}
+      <Form.Item
+        name="region"
+        label="区域"
+        rules={[{ required: true, message: '请选择区域' }]}
+      >
         <Select
-    showSearch
-    placeholder="Select a region"
-    optionFilterProp="label"
-    onChange={onChange}
-    onSearch={onSearch}
-    options={
-      //动态渲染
-      props.regionList.map(item=>{
-        return {
-          value:item.id,
-          label:item.value
-        }
-      })
-     }
-  />
-        </Form.Item>
-        <Form.Item name="roleId" label="角色"  rules={[{ required: true, message: 'Please input the title of collection!' }]}>
+          showSearch
+          placeholder="请选择区域"
+          optionFilterProp="label"
+          onChange={onChange}
+          options={props.regionList.map(item => ({
+            value: item.id,
+            label: item.value,
+          }))}
+        />
+      </Form.Item>
+
+      {/* 角色选择 */}
+      <Form.Item
+        name="roleId"
+        label="角色"
+        rules={[{ required: true, message: '请选择角色' }]}
+      >
         <Select
-    showSearch
-    placeholder="Select a role"
-    optionFilterProp="label"
-    onChange={onChange}
-    onSearch={onSearch}
-    options={
-      //动态渲染
-      props.roleList.map(item=>{
-        return {
-          value:item.id,
-          label:item.roleName
-        }
-      })
-     }
-  />
-        </Form.Item>
-    </div>
-  )
-})
+          showSearch
+          placeholder="请选择角色"
+          optionFilterProp="label"
+          onChange={onChange}
+          options={props.roleList.map(item => ({
+            value: item.id,
+            label: item.roleName,
+          }))}
+        />
+      </Form.Item>
+    </Form>
+  );
+});
 
 export default UserForm;
-
