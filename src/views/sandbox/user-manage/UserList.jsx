@@ -52,6 +52,20 @@ function UserList() {
       setroleList(list)
     })
   }, [])
+
+  const confirmMethod = (record) => {
+    confirm({
+      title: '确定要删除这个角色吗？',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        deleteMethod(record)
+      },
+      onCancel() {
+        console.log('取消删除')
+      },
+    })
+  }
+
   const columns = [
     {
       title: '区域',
@@ -95,6 +109,7 @@ function UserList() {
               shape="circle"
               icon={<DeleteOutlined />}
               disabled={record.default}
+              onClick={()=>confirmMethod(record)}
             />
           </div>
         )
@@ -104,6 +119,39 @@ function UserList() {
 
   const deleteMethod = (record) => {
     // console.log(record);
+    //页面状态+后端
+    setdataSource(dataSource.filter((item) => item.id !== record.id))
+    axios.delete(`http://localhost:3000/users/${record.id}`)
+  }
+  const addFormOk = () => {
+    addForm.current
+      .validateFields()
+      .then((value) => {
+        // console.log(value)
+        setOpen(false)
+
+        addForm.current.resetFields()
+        //post到后端生成id，再设置dataSource,方便删除和更新
+        // 修正: 确保 `region` 存储的是字符串，而不是 id
+        const selectedRegion = regionList.find(item => item.id === value.region)?.value || "";
+        // 获取所选角色的名称
+        const selectedRole = roleList.find(item => item.id === value.roleId)?.roleName || "";
+        axios.post(`http://localhost:3000/users`,{
+          ...value,
+          "roleState": true,
+          "default": false,
+          region: selectedRegion, // 修正 `region` 的值
+          roleName: selectedRole, // 修正 `roleName` 的值
+        }).then((res) => {
+          console.log(res.data)
+          setdataSource([...dataSource, {...res.data,
+            role:roleList.filter(item => item.id === value.roleId)[0],
+          }])
+        })
+      })
+      .catch((errInfo) => {
+        console.log(errInfo)
+      })
   }
 
   const [open, setOpen] = useState(false)
@@ -129,16 +177,7 @@ function UserList() {
         cancelText="取消"
         okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
         onCancel={() => setOpen(false)}
-        onOk={() => {
-          addForm.current
-            .validateFields()
-            .then((value) => {
-              console.log(value)
-            })
-            .catch((errInfo) => {
-              console.log(errInfo)
-            })
-        }}
+        onOk={() => addFormOk()}
         destroyOnClose
         modalRender={(dom) => <Form layout="vertical">{dom}</Form>}
       >

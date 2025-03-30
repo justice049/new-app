@@ -71,6 +71,53 @@
       "region": "亚洲",
       "roleId": 3,
       "id": 8
+    },
+    {
+      "username": "switch",
+      "password": "justice049",
+      "region": 3,
+      "roleId": 2,
+      "roleState": true,
+      "default": true,
+      "id": 9
+    },
+    {
+      "username": "墨",
+      "password": "dasdsads",
+      "region": 2,
+      "roleId": 3,
+      "roleState": true,
+      "default": true,
+      "id": 10
+    },
+    {
+      "username": "111",
+      "password": "dsadsadsa",
+      "region": "大洋洲",
+      "roleId": 2,
+      "roleState": true,
+      "default": false,
+      "id": 11
+    },
+    {
+      "username": "dasds",
+      "password": "hgfhg",
+      "region": "南美洲",
+      "roleId": 2,
+      "roleState": true,
+      "default": false,
+      "roleName": "区域管理员",
+      "id": 12
+    },
+    {
+      "username": "test4",
+      "password": "dsadsadsadsa",
+      "region": "南美洲",
+      "roleId": 2,
+      "roleState": true,
+      "default": false,
+      "roleName": "区域管理员",
+      "id": 13
     }
   ],
   "roles": [

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { useState,forwardRef, useImperativeHandle } from 'react';
 import { Form, Input, Select } from 'antd';
 
 // 封装一下
@@ -12,10 +12,37 @@ const UserForm = forwardRef((props, ref) => {
     resetFields: () => form.resetFields(),
   }));
 
+  const [isDisabled, setIsDisabled] = useState(false);
+
   // 选择框事件
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
+  // 角色选择事件
+const handleRoleChange = (value) => {
+    if (value === 1) { 
+      setIsDisabled(true);
+      form.setFieldsValue({ region: "" }); // 清空区域
+    } else {
+      setIsDisabled(false);
+    }
   };
+
+  const confirmMethod = (record) => {
+    confirm({
+      title: '确定要删除这个角色吗？',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        deleteMethod(record)
+      },
+      onCancel() {
+        console.log('取消删除')
+      },
+    })
+  }
+  
+  // 区域选择事件 (不影响角色逻辑)
+  const handleRegionChange = (value) => {
+    console.log("区域选择:", value);
+  };
+  
 
   return (
     <Form form={form} layout="vertical"> 
@@ -41,13 +68,14 @@ const UserForm = forwardRef((props, ref) => {
       <Form.Item
         name="region"
         label="区域"
-        rules={[{ required: true, message: '请选择区域' }]}
+        rules={isDisabled?[]:[{ required: true, message: '请选择区域' }]}
       >
         <Select
+        disabled={isDisabled}
           showSearch
           placeholder="请选择区域"
           optionFilterProp="label"
-          onChange={onChange}
+          onChange={handleRegionChange}
           options={props.regionList.map(item => ({
             value: item.id,
             label: item.value,
@@ -65,7 +93,7 @@ const UserForm = forwardRef((props, ref) => {
           showSearch
           placeholder="请选择角色"
           optionFilterProp="label"
-          onChange={onChange}
+          onChange={handleRoleChange}
           options={props.roleList.map(item => ({
             value: item.id,
             label: item.roleName,
