@@ -2,14 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import {
   Button,
   Table,
-  Tag,
   Modal,
-  Popover,
   Switch,
   Form,
-  Input,
-  Radio,
-  Select,
 } from 'antd'
 import {
   EditOutlined,
@@ -17,8 +12,6 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import axios from 'axios'
-import { data } from 'react-router-dom'
-import Item from 'antd/es/list/Item'
 import UserForm from '../../../components/user-manage/UserForm'
 
 const { confirm } = Modal
@@ -27,6 +20,9 @@ function UserList() {
   const [isAddVisible, setisAddVisible] = useState(false)
   const [roleList, setroleList] = useState([])
   const [regionList, setregionList] = useState([])
+  const [isUpdateVisible, setisUpdateVisible] = useState(false)
+  
+  const updateForm = useRef(null)
   const addForm = useRef(null)
 
   useEffect(() => {
@@ -53,6 +49,13 @@ function UserList() {
     })
   }, [])
 
+  const deleteMethod = (record) => {
+    // console.log(record);
+    //页面状态+后端
+    setdataSource(dataSource.filter((item) => item.id !== record.id))
+    axios.delete(`http://localhost:3000/users/${record.id}`)
+  }
+
   const confirmMethod = (record) => {
     confirm({
       title: '确定要删除这个角色吗？',
@@ -64,6 +67,21 @@ function UserList() {
         console.log('取消删除')
       },
     })
+  }
+
+  const handleChange = (item)=>{
+    // console.log(item)
+    item.roleState = !item.roleState
+    setdataSource([...dataSource])
+
+    axios.patch(`http://localhost:3000/users/${item.id}`,{
+      roleState:item.roleState
+    })
+  }
+
+  const handleUpdate = (item) => {
+    setOpen(true)
+    setFormInfo(item)
   }
 
   const columns = [
@@ -89,7 +107,9 @@ function UserList() {
       title: '用户状态',
       dataIndex: 'roleState',
       render: (roleState, item) => {
-        return <Switch checked={roleState} disabled={item.default}></Switch>
+        return <Switch checked={roleState} disabled={item.default}
+        onChange={()=>handleChange(item)}
+        ></Switch>
       },
     },
     {
@@ -102,6 +122,7 @@ function UserList() {
               shape="circle"
               icon={<EditOutlined />}
               disabled={record.default}
+              onClick={()=>handleUpdate(record)}
             />
             <Button
               danger
@@ -117,12 +138,6 @@ function UserList() {
     },
   ]
 
-  const deleteMethod = (record) => {
-    // console.log(record);
-    //页面状态+后端
-    setdataSource(dataSource.filter((item) => item.id !== record.id))
-    axios.delete(`http://localhost:3000/users/${record.id}`)
-  }
   const addFormOk = () => {
     addForm.current
       .validateFields()
@@ -155,6 +170,9 @@ function UserList() {
   }
 
   const [open, setOpen] = useState(false)
+  const updateFormOk = () => {
+
+  }
 
   return (
     <div>
@@ -185,6 +203,25 @@ function UserList() {
           regionList={regionList}
           roleList={roleList}
           ref={addForm}
+        ></UserForm>
+      </Modal>
+
+      {/* 更新  */}
+      <Modal
+        open={isUpdateVisible}
+        title="更新用户"
+        okText="更新"
+        cancelText="取消"
+        okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
+        onCancel={() => setisUpdateVisible(false)}
+        onOk={() => updateFormOk()}
+        destroyOnClose
+        modalRender={(dom) => <Form layout="vertical">{dom}</Form>}
+      >
+        <UserForm
+          regionList={regionList}
+          roleList={roleList}
+          ref={updateForm}
         ></UserForm>
       </Modal>
     </div>
