@@ -171,10 +171,12 @@ function UserList() {
       setisUpdateVisible(true)
       if(item.roleId === 1)
       {
-        item.region = ""
+        //禁用
+        setisUpdateDisabled(true)
       }
       else{
-        item.region = item.regionId
+          //取消禁用
+          setisUpdateDisabled(false)
       }
       updateForm.current.setFieldsValue(item) 
     })
@@ -233,6 +235,7 @@ function UserList() {
           regionList={regionList}
           roleList={roleList}
           ref={updateForm}
+          isUpdateDisabled = {isUpdateDisabled}
         ></UserForm>
       </Modal>
     </div>

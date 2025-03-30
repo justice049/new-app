@@ -1,11 +1,14 @@
-import React, { useState,forwardRef, useImperativeHandle } from 'react';
+import React, { useState,forwardRef, useImperativeHandle, useEffect } from 'react';
 import { Form, Input, Select } from 'antd';
 
 // 封装一下
 const UserForm = forwardRef((props, ref) => {
+    useEffect(() => {
+        setIsDisabled(props.isUpdateDisabled);
+    })
+  }, [props.isUpdateDisabled])
     // 使用forwardRef 可以让子组件获取父组件的方法
     const [form] = Form.useForm();
-
   // 让外部 ref 访问 form 的方法
   useImperativeHandle(ref, () => ({
     validateFields: () => form.validateFields(),
@@ -15,7 +18,7 @@ const UserForm = forwardRef((props, ref) => {
   }));
 
   const [isDisabled, setIsDisabled] = useState(false);
-
+  
   // 选择框事件
   // 角色选择事件
 const handleRoleChange = (value) => {
