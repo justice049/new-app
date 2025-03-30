@@ -1,13 +1,19 @@
-import React,{useState,useEffect} from 'react';
-import { Button,Table, Tag,Modal,Popover, Switch } from 'antd';
+import React,{useState,useEffect,useRef} from 'react';
+import { Button,Table, Tag,Modal,Popover, Switch,Form,Input,Radio,Select } from 'antd';
 import { EditOutlined,DeleteOutlined,ExclamationCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { data } from 'react-router-dom';
 import Item from 'antd/es/list/Item';
-const { confirm } = Modal;
+import UserForm from '../../../components/user-manage/UserForm';
 
+const { confirm } = Modal;
 function UserList() {
     const [dataSource,setdataSource]=useState([])
+    const [isAddVisible,setisAddVisible]=useState(false)
+    const [roleList,setroleList]=useState([])
+    const [regionList,setregionList]=useState([])
+    const addForm = useRef(null)
+
     useEffect(()=>{
         axios.get("http://localhost:3000/users?_expand=role").then(res=>{
           console.log(res.data);
@@ -15,6 +21,22 @@ function UserList() {
           setdataSource(list)
        })
     },[])
+
+    useEffect(()=>{
+      axios.get("http://localhost:3000/regions").then(res=>{
+        console.log(res.data);
+        const list = res.data
+        setregionList(list)
+     })
+  },[])
+
+  useEffect(()=>{
+    axios.get("http://localhost:3000/roles").then(res=>{
+      console.log(res.data);
+      const list = res.data
+      setroleList(list)
+   })
+},[])
     const columns = [
         {
           title: '区域',
@@ -58,9 +80,13 @@ function UserList() {
         console.log(record);
       }
 
+      const [open, setOpen] = useState(false);
+
       return (
         <div>
-            <Button></Button>
+            <Button type='primary' onClick={
+              () => setOpen(true)
+            }>添加用户</Button>
             <Table dataSource={dataSource} columns={columns}
             pagination={{
               pageSize:5 
@@ -68,6 +94,29 @@ function UserList() {
             >
             rowKey = {item => item.id}
             </Table>
+            <Modal
+        open={open}
+        title="添加用户"
+        okText="确定"
+        cancelText="取消"
+        okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
+        onCancel={() => setOpen(false)}
+        onOk={()=>{
+          console.log("add")
+        }}
+        destroyOnClose
+        modalRender={(dom) => (
+          <Form
+            layout="vertical"
+          >
+            {dom}
+          </Form>
+        )}
+      >
+        <UserForm regionList={regionList} roleList={roleList}
+        ref={addForm}
+        ></UserForm>
+      </Modal>
         </div>
       )
 }
