@@ -11,13 +11,6 @@ const UserForm = forwardRef((props, ref) => {
   const internalForm = props.form || form // 使用外部传递的 form 实例
   const [isDisabled, setIsDisabled] = useState(false)
 
-  // useEffect(() => {
-  //   if (props.form) {
-  //     props.form.setFieldValue(props.initialValues)
-  //   }
-  //   // setIsDisabled(props.isUpdateDisabled);
-  // }, [props.isUpdateDisabled, props.form]) // 修复 useEffect 的语法
-
   useEffect(() => {
     if (props.form && props.initialValues) {
       props.form.setFieldsValue(props.initialValues);
@@ -31,15 +24,6 @@ const UserForm = forwardRef((props, ref) => {
     setFieldsValue: (values) => internalForm.setFieldsValue(values),
   }))
 
-  // const handleRoleChange = (value) => {
-  //   if (value === 1) {
-  //     setIsDisabled(true);
-  //     form.setFieldsValue({ region: "" });
-  //   } else {
-  //     setIsDisabled(false);
-  //   }
-  // };
-  // UserForm 组件中的角色切换逻辑
   const handleRoleChange = (value) => {
     const isSuperAdmin = value === 1 // 假设角色ID=1是超级管理员
     setIsDisabled(isSuperAdmin)
@@ -61,14 +45,6 @@ const UserForm = forwardRef((props, ref) => {
       >
         <Input placeholder="请输入用户名" />
       </Form.Item>
-      {/* 
-      <Form.Item
-        name="password"
-        label="密码"
-        rules={[{ required: true, message: '请输入密码' }]}
-      >
-        <Input.Password placeholder="请输入密码" />
-      </Form.Item> */}
 
       <Form.Item
         name="password"

@@ -17,6 +17,7 @@ function UserList() {
   const [isUpdateVisible, setisUpdateVisible] = useState(false)
   const [isUpdateDisabled, setisUpdateDisabled] = useState(false)
   const [form] = Form.useForm() //创建antd的form实例
+  const [current,setCurrent] = useState(null)
 
   const updateForm = useRef(null)
   const addForm = useRef(null)
@@ -181,53 +182,16 @@ function UserList() {
   const [isUpdate, setisUpdate] = useState(false)
   const [updateform] = Form.useForm() //创建antd的updateform实例
 
-  // const handleUpdate = (item) => {
-  //   setisUpdateVisible(true)
-  //   setisUpdateDisabled(item.default)
-  //   if(item.roleId === 1){
-  //       //禁用
-  //       setisUpdateDisabled(true)
-  //   }
-  //   else{
-  //     setisUpdateDisabled(false) // 启用更新表单的编辑
-  //   }
-  //   setTimeout(() => {
-  //     updateform.setFieldsValue({
-  //       username: item.username,
-  //       region: item.region,
-  //       roleId: item.role?.id,
-  //     })
-  //   }, 100) // 增加一定的延迟确保 Modal 已渲染
-
-  //   // //更新要想办法让已有数据展示出来
-  //   // // setisUpdate(true)
-  //   // updateform.setFieldsValue({ // 填充表单数据
-  //   // username: item.username,
-  //   // region: item.region,
-  //   // roleId: item.role?.id
-  //   // });
-  // }
-  // const handleUpdate = (item) => {
-  //   setisUpdateVisible(true);
-  //   setisUpdateDisabled(item.default);
-  //   if (item.roleId === 1) {
-  //     setisUpdateDisabled(true);
-  //   } else {
-  //     setisUpdateDisabled(false);
-  //   }
-  //   setTimeout(() => {
-  //     updateform.setFieldsValue({
-  //       username: item.username,
-  //       region: item.region,
-  //       roleId: item.role?.id,
-  //       password: item.password, // 确保密码字段被正确设置
-  //     });
-  //   }, 100);
-  // }
   const handleUpdate = (item) => {
     setisUpdateVisible(true);
     setisUpdateDisabled(item.default);
     setTimeout(() => {
+      //保证超级管理员的区域禁用
+      if(item.roleId === 1) {
+        setisUpdateDisabled(true)
+      } else {
+        setisUpdateDisabled(false)
+      }
       updateform.setFieldsValue({
         username: item.username,
         password: item.password, // 确保密码字段被正确设置
@@ -235,10 +199,35 @@ function UserList() {
         roleId: item.role?.id,
       });
     }, 100); // 增加一定的延迟确保 Modal 已渲染
+    setCurrent(item)
   }
 
   const [open, setOpen] = useState(false)
-  const updateFormOk = () => {}
+
+  const updateFormOk = () => {
+    updateform
+      .validateFields()
+      .then((value) => {
+        setisUpdateVisible(false);
+        const selectedRegion = regionList.find(region => region.id === value.region)?.value || '';
+        setdataSource(dataSource.map((item) => {
+          if (item.id === current.id) {
+            return {
+              ...item,
+              ...value,
+              region: selectedRegion, // 将区域 ID 转换为区域名称
+              role: roleList.filter((data) => data.id === value.roleId)[0],
+            }
+          }
+          return item;
+        }));
+        // 同步后端数据
+        axios.patch(`http://localhost:3000/users/${current.id}`, {
+          ...value,
+          region: selectedRegion, // 确保后端也存储区域名称
+        });
+      });
+  }
 
   return (
     <div>
