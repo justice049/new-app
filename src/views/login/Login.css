@@ -1,0 +1,21 @@
+/* 使盒子居中 */
+.formContainer {
+    position: fixed;
+    background-color: rgba(46, 122, 184, 0.3);
+    width: 400px;
+    height: 350px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px; /* 添加圆角边框 */
+}
+
+.logintitle{
+    text-align: center;
+    height: 80px;
+    line-height: 80px;
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+}

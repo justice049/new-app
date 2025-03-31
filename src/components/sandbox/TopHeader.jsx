@@ -7,6 +7,13 @@ import { Dropdown, Space } from 'antd'
 import { DownOutlined, SmileOutlined } from '@ant-design/icons'
 import { Avatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
+
+//从Layout组件中解构Header组件
+const { Header } = Layout
+function TopHeader() {
+  //v6的写法
+const navigate = useNavigate()
 
 const items = [
   {
@@ -49,12 +56,15 @@ const items = [
     key: '4',
     danger: true,
     label: '要退出吗',
+    onClick: () => {
+      localStorage.removeItem('token')
+      //使用navigate实现重定向
+      navigate('/login')
+    },
   },
 ]
 
-//从Layout组件中解构Header组件
-const { Header } = Layout
-function TopHeader() {
+
   const [collapsed, setCollapsed] = useState(false)
   //定义changeCollapsed函数，用于展开/收起侧边栏,通过取反实现
   const changeCollapsed = () => {
@@ -63,17 +73,6 @@ function TopHeader() {
   const { token } = theme.useToken() // 获取主题 token
  
   const { colorBgContainer, borderRadiusLG } = token
-
-  const menu = (
-    <Menu>
-       <Menu.Item>
-          超级管理员
-       </Menu.Item>
-       <Menu.Item danger onClick={()=>{
-          localStorage.removeItem('token')
-       }}>退出</Menu.Item>
-    </Menu>
-  )
 
   return (
     <Header
