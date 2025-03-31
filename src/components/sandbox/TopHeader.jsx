@@ -1,5 +1,5 @@
 //导入antd
-import { Layout, theme, Button } from 'antd'
+import { Layout, theme, Button,Menu } from 'antd'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import { changeConfirmLocale } from 'antd/es/modal/locale'
@@ -61,7 +61,20 @@ function TopHeader() {
     setCollapsed(!collapsed)
   }
   const { token } = theme.useToken() // 获取主题 token
+ 
   const { colorBgContainer, borderRadiusLG } = token
+
+  const menu = (
+    <Menu>
+       <Menu.Item>
+          超级管理员
+       </Menu.Item>
+       <Menu.Item danger onClick={()=>{
+          localStorage.removeItem('token')
+       }}>退出</Menu.Item>
+    </Menu>
+  )
+
   return (
     <Header
       style={{

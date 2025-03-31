@@ -110,6 +110,26 @@
       "default": false,
       "roleName": "区域管理员",
       "id": 14
+    },
+    {
+      "username": "事实上",
+      "password": "dsadsa",
+      "region": "欧洲",
+      "roleId": 2,
+      "roleState": true,
+      "default": false,
+      "roleName": "区域管理员",
+      "id": 15
+    },
+    {
+      "username": "pppp",
+      "password": "dsaadsdsad",
+      "region": "南美洲",
+      "roleId": 2,
+      "roleState": true,
+      "default": false,
+      "roleName": "区域管理员",
+      "id": 16
     }
   ],
   "roles": [

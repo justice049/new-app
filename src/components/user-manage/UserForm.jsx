@@ -1,57 +1,59 @@
-import React, { useState,forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Form, Input, Select } from 'antd';
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+} from 'react'
+import { Form, Input, Select } from 'antd'
 
-// 封装一下
 const UserForm = forwardRef((props, ref) => {
-    useEffect(() => {
-        setIsDisabled(props.isUpdateDisabled);
-    })
-  }, [props.isUpdateDisabled])
-    // 使用forwardRef 可以让子组件获取父组件的方法
-    const [form] = Form.useForm();
-  // 让外部 ref 访问 form 的方法
-  useImperativeHandle(ref, () => ({
-    validateFields: () => form.validateFields(),
-    resetFields: () => form.resetFields(),
-    // 新增 setFieldsValue 方法
-    setFieldsValue: (values) => form.setFieldsValue(values),
-  }));
+  const [form] = Form.useForm()
+  const internalForm = props.form || form // 使用外部传递的 form 实例
+  const [isDisabled, setIsDisabled] = useState(false)
 
-  const [isDisabled, setIsDisabled] = useState(false);
-  
-  // 选择框事件
-  // 角色选择事件
-const handleRoleChange = (value) => {
-    if (value === 1) { 
-      setIsDisabled(true);
-      form.setFieldsValue({ region: "" }); // 清空区域
-    } else {
-      setIsDisabled(false);
+  // useEffect(() => {
+  //   if (props.form) {
+  //     props.form.setFieldValue(props.initialValues)
+  //   }
+  //   // setIsDisabled(props.isUpdateDisabled);
+  // }, [props.isUpdateDisabled, props.form]) // 修复 useEffect 的语法
+
+  useEffect(() => {
+    if (props.form && props.initialValues) {
+      props.form.setFieldsValue(props.initialValues);
     }
-  };
+    setIsDisabled(props.isUpdateDisabled);
+  }, [props.isUpdateDisabled, props.form, props.initialValues]); // 确保依赖项正确
 
-  const confirmMethod = (record) => {
-    confirm({
-      title: '确定要删除这个角色吗？',
-      icon: <ExclamationCircleOutlined />,
-      onOk() {
-        deleteMethod(record)
-      },
-      onCancel() {
-        console.log('取消删除')
-      },
-    })
+  useImperativeHandle(ref, () => ({
+    validateFields: () => internalForm.validateFields(),
+    resetFields: () => internalForm.resetFields(),
+    setFieldsValue: (values) => internalForm.setFieldsValue(values),
+  }))
+
+  // const handleRoleChange = (value) => {
+  //   if (value === 1) {
+  //     setIsDisabled(true);
+  //     form.setFieldsValue({ region: "" });
+  //   } else {
+  //     setIsDisabled(false);
+  //   }
+  // };
+  // UserForm 组件中的角色切换逻辑
+  const handleRoleChange = (value) => {
+    const isSuperAdmin = value === 1 // 假设角色ID=1是超级管理员
+    setIsDisabled(isSuperAdmin)
+    if (isSuperAdmin) {
+      internalForm.setFieldsValue({ region: '' }) // 清空区域选择
+    }
   }
-  
-  // 区域选择事件 (不影响角色逻辑)
+
   const handleRegionChange = (value) => {
-    console.log("区域选择:", value);
-  };
-  
+    console.log('区域选择:', value)
+  }
 
   return (
-    <Form form={form} layout="vertical"> 
-      {/* 用户名 */}
+    <Form form={internalForm} layout="vertical">
       <Form.Item
         name="username"
         label="用户名"
@@ -59,8 +61,15 @@ const handleRoleChange = (value) => {
       >
         <Input placeholder="请输入用户名" />
       </Form.Item>
+      {/* 
+      <Form.Item
+        name="password"
+        label="密码"
+        rules={[{ required: true, message: '请输入密码' }]}
+      >
+        <Input.Password placeholder="请输入密码" />
+      </Form.Item> */}
 
-      {/* 密码 */}
       <Form.Item
         name="password"
         label="密码"
@@ -68,27 +77,24 @@ const handleRoleChange = (value) => {
       >
         <Input.Password placeholder="请输入密码" />
       </Form.Item>
-
-      {/* 区域选择 */}
       <Form.Item
         name="region"
         label="区域"
-        rules={isDisabled?[]:[{ required: true, message: '请选择区域' }]}
+        rules={isDisabled ? [] : [{ required: true, message: '请选择区域' }]}
       >
         <Select
-        disabled={isDisabled}
+          disabled={isDisabled}
           showSearch
           placeholder="请选择区域"
           optionFilterProp="label"
           onChange={handleRegionChange}
-          options={props.regionList.map(item => ({
+          options={props.regionList.map((item) => ({
             value: item.id,
             label: item.value,
           }))}
         />
       </Form.Item>
 
-      {/* 角色选择 */}
       <Form.Item
         name="roleId"
         label="角色"
@@ -99,14 +105,14 @@ const handleRoleChange = (value) => {
           placeholder="请选择角色"
           optionFilterProp="label"
           onChange={handleRoleChange}
-          options={props.roleList.map(item => ({
+          options={props.roleList.map((item) => ({
             value: item.id,
             label: item.roleName,
           }))}
         />
       </Form.Item>
     </Form>
-  );
-});
+  )
+})
 
-export default UserForm;
+export default UserForm
