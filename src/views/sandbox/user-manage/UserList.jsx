@@ -80,6 +80,25 @@ function UserList() {
     {
       title: '区域',
       dataIndex: 'region',
+      filters:[
+        ...regionList.map((item) => ({
+            text: item.value,
+            value: item.value,
+        }))
+        ,{
+          text: '全球',
+          value: '全球',
+        }
+      ],
+
+      onFilter: (value, item) =>
+        {
+          if(value === '全球') {
+            return item.region === ""
+          }
+          return item.region===value
+        }, 
+
       render: (region) => {
         return <b>{region === '' ? '全球' : region}</b>
       },
