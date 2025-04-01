@@ -74,6 +74,9 @@ const items = [
  
   const { colorBgContainer, borderRadiusLG } = token
 
+  //使用户名动态渲染
+  const {role:{roleName},username} = JSON.parse(localStorage.getItem('token'))
+
   return (
     <Header
       style={{
@@ -83,7 +86,7 @@ const items = [
     >
       <div style={{ float: 'right' }}>
         {/* 定义欢迎语 */}
-        <span>欢迎主人回来</span>
+        <span>欢迎{roleName}回来</span>
         {/* 定义下拉菜单 */}
         <Dropdown
           menu={{
