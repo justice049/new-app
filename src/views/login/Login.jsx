@@ -4,23 +4,8 @@ import { Button, Checkbox, Form, Input, Flex, message } from 'antd';
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import './Login.css';
-import axios from 'axios'
-import { Navigate, useNavigate } from 'react-router-dom';
-
-const onFinish = (values,navigate) => {
-    //都查到了才证明输入的是正确的
-    console.log(values);
-    axios.get(`http://localhost:3000/users?username=${values.username}&password=${values.password}&roleState=true&_expand`).then
-    (res=>{
-        console.log(res.data);
-        if(res.data.length === 0) {
-            message.error("用户名或密码错误！");
-        } else {
-            localStorage.setItem("token", JSON.stringify(res.data[0]));
-            Navigate("/");
-        }
-    })
-};
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ParticlesBackground = () => {
     const particlesInit = useCallback(async (engine) => {
@@ -55,12 +40,28 @@ const ParticlesBackground = () => {
 };
 
 function Login() {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); //获取 navigate
+
+    const onFinish = (values) => {
+        console.log(values);
+        axios.get(`http://localhost:3000/users?username=${values.username}&password=${values.password}&roleState=true&_expand`)
+            .then(res => {
+                console.log(res.data);
+                if (res.data.length === 0) {
+                    message.error("用户名或密码错误！");
+                } else {
+                    localStorage.setItem("token", JSON.stringify(res.data[0]));
+                    navigate("/"); //直接调用 navigate，无需传参
+                }
+            })
+            .catch(error => {
+                console.error("请求错误:", error);
+                message.error("登录失败，请稍后再试！");
+            });
+    };
+
     return (
-        <div style={{
-            position: "relative",
-            height: "100vh",
-        }}>
+        <div style={{ position: "relative", height: "100vh" }}>
             <ParticlesBackground />
             <div className='formContainer' style={{ position: "relative", zIndex: 1 }}>
                 <div className='logintitle'>全球新闻发布管理</div>
@@ -68,7 +69,7 @@ function Login() {
                     name="login"
                     initialValues={{ remember: true }}
                     style={{ maxWidth: 360 }}
-                    onFinish={onFinish}
+                    onFinish={onFinish} //直接使用 onFinish
                 >
                     <Form.Item
                         name="username"

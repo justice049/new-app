@@ -15,56 +15,6 @@ function TopHeader() {
   //v6的写法
 const navigate = useNavigate()
 
-const items = [
-  {
-    key: '1',
-    label: (
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.antgroup.com"
-      >
-        帮我上模电实验
-      </a>
-    ),
-  },
-  {
-    key: '2',
-    label: (
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.aliyun.com"
-      >
-        帮我上电磁场课
-      </a>
-    ),
-  },
-  {
-    key: '3',
-    label: (
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.luohanacademy.com"
-      >
-        帮我辅助面试
-      </a>
-    ),
-  },
-  {
-    key: '4',
-    danger: true,
-    label: '要退出吗',
-    onClick: () => {
-      localStorage.removeItem('token')
-      //使用navigate实现重定向
-      navigate('/login')
-    },
-  },
-]
-
-
   const [collapsed, setCollapsed] = useState(false)
   //定义changeCollapsed函数，用于展开/收起侧边栏,通过取反实现
   const changeCollapsed = () => {
@@ -75,7 +25,61 @@ const items = [
   const { colorBgContainer, borderRadiusLG } = token
 
   //使用户名动态渲染
-  const {role:{roleName},username} = JSON.parse(localStorage.getItem('token'))
+  // const {role:{roleName},username} = JSON.parse(localStorage.getItem('token'))
+  //使用户名动态渲染
+  const tokenData = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象
+  const { role = {}, username } = tokenData; // 确保 role 是一个对象
+  const { roleName } = role;
+
+  const items = [
+    {
+      key: '1',
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.antgroup.com"
+        >
+          帮我做模电实验
+        </a>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.aliyun.com"
+        >
+          帮我上电磁场课
+        </a>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.luohanacademy.com"
+        >
+          帮我辅助面试
+        </a>
+      ),
+    },
+    {
+      key: '4',
+      danger: true,
+      label: '要退出吗',
+      onClick: () => {
+        localStorage.removeItem('token')
+        //使用navigate实现重定向
+        navigate('/login')
+      },
+    },
+  ]
+  
 
   return (
     <Header
@@ -86,7 +90,7 @@ const items = [
     >
       <div style={{ float: 'right' }}>
         {/* 定义欢迎语 */}
-        <span>欢迎{roleName}回来</span>
+        <span>欢迎{username}回来</span>
         {/* 定义下拉菜单 */}
         <Dropdown
           menu={{
