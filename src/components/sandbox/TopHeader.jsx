@@ -27,9 +27,7 @@ const navigate = useNavigate()
   //使用户名动态渲染
   // const {role:{roleName},username} = JSON.parse(localStorage.getItem('token'))
   //使用户名动态渲染
-  const tokenData = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象
-  const { role = {}, username } = tokenData; // 确保 role 是一个对象
-  const { roleName } = role;
+  const {role:{roleName},username} = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象 
 
   const items = [
     {
@@ -40,7 +38,7 @@ const navigate = useNavigate()
           rel="noopener noreferrer"
           href="https://www.antgroup.com"
         >
-          帮我做模电实验
+          帮{roleName}做模电实验
         </a>
       ),
     },
@@ -52,7 +50,7 @@ const navigate = useNavigate()
           rel="noopener noreferrer"
           href="https://www.aliyun.com"
         >
-          帮我上电磁场课
+          帮{roleName}上电磁场课
         </a>
       ),
     },
@@ -64,7 +62,7 @@ const navigate = useNavigate()
           rel="noopener noreferrer"
           href="https://www.luohanacademy.com"
         >
-          帮我辅助面试
+          帮{roleName}辅助面试
         </a>
       ),
     },
@@ -90,7 +88,7 @@ const navigate = useNavigate()
     >
       <div style={{ float: 'right' }}>
         {/* 定义欢迎语 */}
-        <span>欢迎{username}回来</span>
+        <span>欢迎<span style={{color:'blue'}}>{username}</span>回来</span>
         {/* 定义下拉菜单 */}
         <Dropdown
           menu={{

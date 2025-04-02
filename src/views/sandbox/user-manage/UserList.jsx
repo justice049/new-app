@@ -22,11 +22,24 @@ function UserList() {
   const updateForm = useRef(null)
   const addForm = useRef(null)
 
+  //判断用户权限
+  const {roleId,region,username} = JSON.parse(localStorage.getItem('token'))
+  //提前设计映射
+  const roleObj = {
+    "1":"superadmin",
+    "2":"admin",
+    "3":"editor"
+  }
+
   useEffect(() => {
-    axios.get('http://localhost:3000/users?_expand=role').then((res) => {
+    axios.get('http://localhost:3000/users?_expand=role').then(res => {
       // console.log(res.data);
       const list = res.data
-      setdataSource(list)
+      //如果是超级管理员，显示所有数据
+      setdataSource(roleObj[roleId]==="superadmin"?list:[
+          ...list.filter(item=>item.username===username),
+          ...list.filter(item=>item.region===region && roleObj[item.roleId]==='editor')
+      ])
     })
   }, [])
 

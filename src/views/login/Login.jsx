@@ -44,7 +44,8 @@ function Login() {
 
     const onFinish = (values) => {
         console.log(values);
-        axios.get(`http://localhost:3000/users?username=${values.username}&password=${values.password}&roleState=true&_expand`)
+        //使用expand获取角色信息
+        axios.get(`http://localhost:3000/users?username=${values.username}&password=${values.password}&roleState=true&_expand=role`)
             .then(res => {
                 console.log(res.data);
                 if (res.data.length === 0) {
