@@ -9,6 +9,7 @@ import { Navigate } from "react-router-dom";
 import Nopermission from "../sandbox/nopermission/Nopermission";
 //引入antd
 import { theme, Layout, ConfigProvider } from "antd";
+import NewsRouter from "../../components/sandbox/NewsRouter";
 
 //引入自己写的css
 import "./NewSandbox.css";
@@ -38,14 +39,7 @@ function NewSandbox() {
                         borderRadius: borderRadiusLG,
                     }}
             >
-            <Routes>
-                <Route path='/home' element={<Home />} />
-                <Route path='/user-manage/list' element={<UserList />} />
-                <Route path='/right-manage/right/list' element={<RightList />} />
-                <Route path='/right-manage/role/list' element={<RoleList />} />
-                <Route path='/' element={<Navigate to='/home' />} />
-                <Route path='*' element={<Nopermission />} />
-            </Routes>
+                <NewsRouter></NewsRouter>
             </Content>
         </Layout>
         </Layout></ConfigProvider>
