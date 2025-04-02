@@ -39,11 +39,17 @@ function SideMenu() {
  
   const navigate = useNavigate()
  
-  const {role:{rights}} = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象
+  // const {role:{rights}} = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象
+  const tokenData = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象
+  const { role = {} } = tokenData; // 确保 role 是一个对象
+  const { rights = [] } = role; // 确保 rights 是一个数组
 
   const checkPermission = (item) => {
     // 检查用户是否具有访问权限（还要当前登录的用户的权限列表）
-    return item.pagepermisson && rights.includes(item.key)
+    if (role.roleName === '超级管理员') {
+      return true
+    }
+    return item.pagepermisson && Array.isArray(rights) && rights.includes(item.key)
   }
  
   const renderMenu = (menuList) => {

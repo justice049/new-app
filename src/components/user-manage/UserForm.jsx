@@ -36,6 +36,61 @@ const UserForm = forwardRef((props, ref) => {
     console.log('区域选择:', value)
   }
 
+  const {roleId,region} = JSON.parse(localStorage.getItem('token')) || {};
+  const roleObj = {
+    "1":"superadmin",
+    "2":"admin",
+    "3":"editor"
+  }
+
+  const checkRegionDisabled = (item) => {
+    //如果是更新状态
+    if(props.isUpdate){
+      if(roleObj[roleId] === "superadmin"){
+        //禁用为假
+        //超级管理员可以看到所有区域
+        return false
+      }
+      else{
+        return true
+      }
+    }else{
+      //如果是添加状态
+      if(roleObj[roleId] === "superadmin"){
+        //禁用为假
+        //超级管理员可以看到所有区域
+        return false
+      }
+      else{
+        return item.value !== region
+      }
+    }
+  }
+
+  const checkRoleDisabled = (item) => {
+    //如果是更新状态
+    if(props.isUpdate){
+      if(roleObj[roleId] === "superadmin"){
+        //禁用为假
+        //超级管理员可以看到所有区域
+        return false
+      }
+      else{
+        return true
+      }
+    }else{
+      //如果是添加状态
+      if(roleObj[roleId] === "superadmin"){
+        //禁用为假
+        //超级管理员可以看到所有身份
+        return false
+      }
+      else{
+        return roleObj[item.id] !== "editor"
+      }
+    }
+  }
+
   return (
     <Form form={internalForm} layout="vertical">
       <Form.Item
@@ -67,6 +122,7 @@ const UserForm = forwardRef((props, ref) => {
           options={props.regionList.map((item) => ({
             value: item.id,
             label: item.value,
+            disabled:checkRegionDisabled(item)
           }))}
         />
       </Form.Item>
@@ -84,6 +140,7 @@ const UserForm = forwardRef((props, ref) => {
           options={props.roleList.map((item) => ({
             value: item.id,
             label: item.roleName,
+            disabled:checkRoleDisabled(item)
           }))}
         />
       </Form.Item>
