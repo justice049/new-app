@@ -17,6 +17,8 @@ import AuditList from "../../views/sandbox/audit-manage/AuditList";
 import Published from "../../views/sandbox/publish-manage/Published";
 import Unpublished from "../../views/sandbox/publish-manage/Unpublished";
 import Sunset from "../../views/sandbox/publish-manage/Sunset";
+import { use, useEffect,useState } from "react";
+import axios from "axios";
 
 //创建一个本地的路由映射表
 const LocalRouterMap = {
@@ -36,6 +38,17 @@ const LocalRouterMap = {
 } 
 
 export default function NewsRouter() {
+    const [BackRouteList,setBackRouteList] = useState([])
+    useEffect(()=>{
+        Promise.all([
+            axios.get("http://localhost:3000/rights"),
+            axios.get("http://localhost:3000/children"), 
+        ]).then(res=>{
+        //    console.log(res); 
+           setBackRouteList([...res[0].data,res[1].data])
+           console.log([...res[0].data,res[1].data])
+        })
+    },[])
   return (
     <Routes>
         {/* 理应后端取数据，根据权限动态渲染 */}
