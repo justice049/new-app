@@ -24,9 +24,9 @@ import axios from "axios";
 //创建一个本地的路由映射表
 const LocalRouterMap = {
     "/home":Home,
-    "user-manage/list":UserList,
-    "right-manage/right/list":RightList,
-    "right-manage/role/list":RoleList,
+    "/user-manage/list":UserList,
+    "/right-manage/right/list":RightList,
+    "/right-manage/role/list":RoleList,
     //写什么新闻列表啊，各种权限啊
     "/news-manage/add":NewsAdd,
     "/news-manage/draft":NewsDraft,
@@ -54,15 +54,18 @@ export default function NewsRouter() {
     {/* 动态渲染路由 */}
     {BackRouteList.map((item) => {
       const Component = LocalRouterMap[item.key];
-      return (
-        Component && (
-          <Route
-            path={item.key}
-            key={item.key}
-            element={<Component />}
-          />
-        )
-      );
+       if(checkRoute() && checkUserPermisson()){
+        return (
+          Component && (
+            <Route
+              path={item.key}
+              key={item.key}
+              element={<Component />}
+            />
+          )
+        );
+       } 
+       return <Nopermission/>
     })}
 
     {/* 首页重定向 */}
