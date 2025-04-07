@@ -49,12 +49,25 @@ export default function NewsRouter() {
            setBackRouteList([...res[0].data,...res[1].data])
         })
     },[])
+
+
+    // const {role:{rights}}= JSON.parse(localStorage.getItem("token"))
+    const token = JSON.parse(localStorage.getItem("token"))
+    const rights = token?.role?.rights?.checked || []
+
+    const checkRoute = (item)=>{
+      return LocalRouterMap[item.key] && item.pagepermisson
+    }
+    const checkUserPermisson = (item)=>{
+      //当前登录用户权限列表 
+      return rights.includes(item.key)
+    } 
   return (
     <Routes>
     {/* 动态渲染路由 */}
     {BackRouteList.map((item) => {
       const Component = LocalRouterMap[item.key];
-       if(checkRoute() && checkUserPermisson()){
+       if(checkRoute(item) && checkUserPermisson(item)){
         return (
           Component && (
             <Route
@@ -65,7 +78,7 @@ export default function NewsRouter() {
           )
         );
        } 
-       return <Nopermission/>
+       return null
     })}
 
     {/* 首页重定向 */}
