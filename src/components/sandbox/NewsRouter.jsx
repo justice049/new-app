@@ -20,6 +20,7 @@ import Sunset from "../../views/sandbox/publish-manage/Sunset";
 import { use, useEffect,useState } from "react";
 import axios from "axios";
 
+
 //创建一个本地的路由映射表
 const LocalRouterMap = {
     "/home":Home,
@@ -38,26 +39,39 @@ const LocalRouterMap = {
 } 
 
 export default function NewsRouter() {
+    // 后端返回的路由映射表
     const [BackRouteList,setBackRouteList] = useState([])
     useEffect(()=>{
         Promise.all([
             axios.get("http://localhost:3000/rights"),
             axios.get("http://localhost:3000/children"), 
         ]).then(res=>{
-        //    console.log(res); 
-           setBackRouteList([...res[0].data,res[1].data])
-           console.log([...res[0].data,res[1].data])
+           setBackRouteList([...res[0].data,...res[1].data])
         })
     },[])
   return (
     <Routes>
-        {/* 理应后端取数据，根据权限动态渲染 */}
-      <Route path="/home" element={<Home />} />
-      <Route path="/user-manage/list" element={<UserList />} />
-      <Route path="/right-manage/right/list" element={<RightList />} />
-      <Route path="/right-manage/role/list" element={<RoleList />} />
-      <Route path="/" element={<Navigate to="/home" />} />
+    {/* 动态渲染路由 */}
+    {BackRouteList.map((item) => {
+      const Component = LocalRouterMap[item.key];
+      return (
+        Component && (
+          <Route
+            path={item.key}
+            key={item.key}
+            element={<Component />}
+          />
+        )
+      );
+    })}
+
+    {/* 首页重定向 */}
+    <Route path="/" element={<Navigate to="/home" />} />
+
+    {/* 权限不足页面 */}
+    {BackRouteList.length > 0 && (
       <Route path="*" element={<Nopermission />} />
-    </Routes>
+    )}
+  </Routes>
   )
 }
