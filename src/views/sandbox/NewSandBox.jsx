@@ -1,4 +1,4 @@
-import SideMenu from "../../components/sandbox/SideMenu";
+import SideMenu from "../../components/sandbox/sidemenu";
 import TopHeader from "../../components/sandbox/TopHeader";
 import { Routes, Route } from "react-router-dom";
 import Home from "./home/Home";
