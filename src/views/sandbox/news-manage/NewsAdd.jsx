@@ -15,6 +15,7 @@ import {
 import style from './News.module.css'
 import axios from 'axios'
 import { set } from 'nprogress'
+import NewsEditor from '../../../../src/components/news-manage/NewsEditor.jsx'
 
 const { Title } = Typography
 const description = 'This is a description'
@@ -91,7 +92,12 @@ export default function NewsAdd() {
     },
     {
       title: '新闻内容',
-      content: '新闻主体内容',
+      // 留一个回调函数用于子传父
+      content: <NewsEditor getContent={(value)=>{
+        
+      }}>
+         
+      </NewsEditor>,
     },
     {
       title: '新闻提交',

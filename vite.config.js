@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react-swc';
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    global: 'window'  // 解决 global 和 setImmediate 问题
+  },
   server: {
     proxy: {
       '/schedule': {
