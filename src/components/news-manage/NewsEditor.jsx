@@ -23,7 +23,6 @@ export default function NewsEditor(props) {
         editorClassName="editorClassName"
         onEditorStateChange={onEditorStateChange}
         onBlur={()=>{
-            // console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())))
             //进行回调
             props.getContent(draftToHtml(convertToRaw(editorState.getCurrentContent())))
         }}

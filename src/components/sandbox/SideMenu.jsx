@@ -50,7 +50,7 @@ function SideMenu() {
 
   const navigate = useNavigate();
 
-  console.log(localStorage.getItem('token'));
+  // console.log(localStorage.getItem('token'));
   const tokenData = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象
   const { role = {} } = tokenData; // 确保 role 是一个对象
   const { rights = {} } = role; // 确保 rights 是一个对象

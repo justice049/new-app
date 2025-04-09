@@ -60,16 +60,16 @@ export default function NewsRouter() {
       rights = [...(role.rights.checked || []), ...(role.rights.halfChecked || [])];
     }
   }
-  console.log(rights)
+  // console.log(rights)
 
   const checkRoute = (item) => {
     return LocalRouterMap[item.key] && item.pagepermisson
   }
   const checkUserPermisson = (item) => {
-    console.log('当前检查的路由 key:', item.key);
-    console.log('用户权限列表 rights:', rights);
+    // console.log('当前检查的路由 key:', item.key);
+    // console.log('用户权限列表 rights:', rights);
     const hasPermission = rights.includes(item.key);
-    console.log('是否有权限:', hasPermission);
+    // console.log('是否有权限:', hasPermission);
     return hasPermission; 
   }
 
