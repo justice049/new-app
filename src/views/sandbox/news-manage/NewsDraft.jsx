@@ -27,6 +27,9 @@ function NewsDraft() {
         {
           title: '新闻标题',
           dataIndex: 'title',
+          render:(title,item)=>{
+              return <a href={`#/news-manage/preview/${item.id}`}>{title}</a>
+          }
         },
         {
           title: '作者',
@@ -43,8 +46,7 @@ function NewsDraft() {
           title: '操作',
           render:(record)=>{
             return <div>
-               <Button type="primary" shape="circle" icon={<EditOutlined />} disabled={
-                record.pagepermisson === undefined }/>
+               <Button type="primary" shape="circle" icon={<EditOutlined />} />
                {/* 如果没有配置权限，就不显示 */}
                <Button danger type="primary" shape="circle" icon={<DeleteOutlined />} onClick=
                {()=>confirmMethod(record)}/>
