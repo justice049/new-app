@@ -11,11 +11,13 @@ import {
   Form,
   Input,
   Select,
+  notification,
 } from 'antd'
 import style from './News.module.css'
 import axios from 'axios'
 import { set } from 'nprogress'
 import NewsEditor from '../../../../src/components/news-manage/NewsEditor.jsx'
+import { useNavigate } from 'react-router-dom'
 
 const { Title } = Typography
 const description = 'This is a description'
@@ -28,10 +30,15 @@ const onFinishFailed = (errorInfo) => {
   console.log('Failed:', errorInfo)
 }
 
-export default function NewsAdd() {
+export default function NewsAdd(props) {
   const { token } = theme.useToken()
   const [current, setCurrent] = useState(0)
   const [categoryList, setCategoryList] = useState([])
+
+  const [formInfo, setFormInfo] = useState({})
+  const [content, setContent] = useState("")
+  const User = JSON.parse(localStorage.getItem('token')) 
+
   const NewsForm = useRef(null)
   const steps = [
     {
@@ -94,7 +101,8 @@ export default function NewsAdd() {
       title: '新闻内容',
       // 留一个回调函数用于子传父
       content: <NewsEditor getContent={(value)=>{
-        
+        // console.log(value) 
+        setContent(value)
       }}>
          
       </NewsEditor>,
@@ -107,14 +115,21 @@ export default function NewsAdd() {
   const next = () => {
     if(current === 0){
       NewsForm.current.validateFields().then((res) => {
-        console.log(res)
+        setFormInfo(res)
         setCurrent(current + 1)
       }).catch((err) => {
         console.log(err)
       })
     }
     else{
-      setCurrent(current + 1)
+      if(content === "" || content.trim()==="<p></p>"){
+        //如果收集的是空的就不放行
+        message.error('新闻内容不能为空')
+        return
+      }
+      else{
+        setCurrent(current + 1)
+      }
     }
   }
   const prev = () => {
@@ -129,6 +144,33 @@ export default function NewsAdd() {
       setCategoryList(res.data)
     })
   }, [])
+
+  const navigate = useNavigate()
+  const handleSave = (auditState) => {
+    axios.post('/news', {
+      ...formInfo,
+      "content":content,
+      "region": User.region?User.region:"全球",
+      "author": User.username,
+      "roleId": User.roleId,
+      "auditState": auditState,
+      "publishState": 0,
+      "createTime": Date.now(),
+      "star":0,
+      "view":0,
+      "publishState": 0,
+    }).then((res) => {
+       //这个写法已经舍弃了
+      //  props.history.push(auditState===0?'/news-manage/draft':'/audit-manage/list')
+      navigate(auditState === 0 ? '/news-manage/draft' : '/audit-manage/list')
+     notification.info({
+      message:`通知`,
+      description:
+      `您可以到${auditState===0?'草稿箱':'审核列表'}查看您的新闻`,
+      placement: 'bottomRight',
+    })
+  })
+}
 
   return (
     <div style={{ marginBottom: 24 }}>
@@ -164,11 +206,11 @@ export default function NewsAdd() {
               style={{
                 margin: '0 8px',
               }}
-              onClick={() => message.success('Processing complete!')}
+              onClick={() => handleSave(0)}
             >
               保存草稿
             </Button>
-            <Button type="primary">提交审核</Button>
+            <Button type="primary" onClick={() => handleSave(1)}>提交审核</Button>
           </>
         )}
         {current > 0 && (
