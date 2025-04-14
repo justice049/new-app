@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import { Button,Table,Modal} from 'antd';
-import { EditOutlined,DeleteOutlined,VerticalAlignTopOutlined,UploadOutlined } from '@ant-design/icons';
+import { EditOutlined,DeleteOutlined,VerticalAlignTopOutlined,UploadOutlined,ExclamationCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { data } from 'react-router-dom';
 import { render } from 'nprogress';
@@ -69,9 +69,9 @@ function NewsDraft() {
       };
 
       const deleteMethod = (record) => {
-        console.log(record);
-        // setdataSource(dataSource.filter(item=>item.id !== record.id))
-        // axios.delete(`/news/${record.id}`)
+        // console.log(record);
+        setdataSource(dataSource.filter(data=>data.id !== record.id))
+        axios.delete(`/news/${record.id}`)
     };
 
     return (
@@ -79,7 +79,9 @@ function NewsDraft() {
             <Table dataSource={dataSource} columns={columns} pagination={{
               //一页显示几条数据
               pageSize:5
-            }}/>
+            }}
+            rowKey={record=>record.id}
+            />
         </div>
     );
 }
