@@ -17,6 +17,7 @@ import AuditList from '../../views/sandbox/audit-manage/AuditList'
 import Published from '../../views/sandbox/publish-manage/Published'
 import Unpublished from '../../views/sandbox/publish-manage/Unpublished'
 import Sunset from '../../views/sandbox/publish-manage/Sunset'
+import NewsUpdate from '../../views/sandbox/news-manage/NewsUpdate'
 import NewsPreview from '../../views/sandbox/news-manage/NewsPreview'
 import { useEffect, useState } from'react'
 import axios from 'axios'
@@ -32,6 +33,7 @@ const LocalRouterMap = {
   '/news-manage/draft': NewsDraft,
   '/news-manage/category': NewsCategory,
   '/news-manage/preview/:id':NewsPreview,
+  '/news-manage/update/:id':NewsUpdate,
   '/audit-manage/audit': Audit,
   '/audit-manage/list': AuditList,
   'publish-manage/published': Published,

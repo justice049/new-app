@@ -4,11 +4,13 @@ import { EditOutlined,DeleteOutlined,VerticalAlignTopOutlined,UploadOutlined,Exc
 import axios from 'axios';
 import { data } from 'react-router-dom';
 import { render } from 'nprogress';
+import { useNavigate } from 'react-router-dom';
+
 const { confirm } = Modal;
 
-function NewsDraft() {
+function NewsDraft(props) {
     const [dataSource,setdataSource]=useState([])
-
+    const navigate = useNavigate();
     const {username} = JSON.parse(localStorage.getItem('token'))
     useEffect(()=>{
         axios.get(`/news?author=${username}&auditState=0&_expand=category`).then(res=>{
@@ -46,7 +48,9 @@ function NewsDraft() {
           title: '操作',
           render:(record)=>{
             return <div>
-               <Button type="primary" shape="circle" icon={<EditOutlined />} />
+               <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={()=>{
+                    navigate(`/news-manage/update/${record.id}`);
+               }} />
                {/* 如果没有配置权限，就不显示 */}
                <Button danger type="primary" shape="circle" icon={<DeleteOutlined />} onClick=
                {()=>confirmMethod(record)}/>

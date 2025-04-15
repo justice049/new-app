@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react'
+import React, { useState, useEffect,useRef, } from 'react'
 import {
   Breadcrumb,
   Typography,
@@ -17,7 +17,8 @@ import style from './News.module.css'
 import axios from 'axios'
 import { set } from 'nprogress'
 import NewsEditor from '../../../../src/components/news-manage/NewsEditor.jsx'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,useParams, } from 'react-router-dom'
+import { LeftOutlined } from '@ant-design/icons';
 
 const { Title } = Typography
 const description = 'This is a description'
@@ -30,13 +31,13 @@ const onFinishFailed = (errorInfo) => {
   console.log('Failed:', errorInfo)
 }
 
-export default function NewsAdd(props) {
+export default function NewsUpdate(props) {
   const { token } = theme.useToken()
   const [current, setCurrent] = useState(0)
   const [categoryList, setCategoryList] = useState([])
+  const { Title } = Typography;
 
   const [formInfo, setFormInfo] = useState({})
-  //用于存储新闻内容
   const [content, setContent] = useState("")
   const User = JSON.parse(localStorage.getItem('token')) 
 
@@ -104,7 +105,7 @@ export default function NewsAdd(props) {
       content: <NewsEditor getContent={(value)=>{
         // console.log(value) 
         setContent(value)
-      }}>
+      }} content={content}>
          
       </NewsEditor>,
     },
@@ -145,26 +146,17 @@ export default function NewsAdd(props) {
       setCategoryList(res.data)
     })
   }, [])
-
-  // 在useEffect中处理历史内容（可以从服务器或父组件传递过来）
+  //取出历史信息
+  const { id } = useParams();
   useEffect(() => {
-    // 如果props.content有值（历史内容），则初始化为该内容
-    if (props.content) {
-      setContent(props.content);  // 假设历史内容是props.content
-    }
-  }, [props.content]);
+    axios.get(`http://localhost:3000/news/${id}?_expand=category&_expand=role`).then(res => {
+    //   setNewsInfo(res.data);
+        let {content} = res.data
+        NewsForm.current.setFieldsValue(res.data)
+        setContent(content);
+    });
+  }, [id]);
 
-  const handleContentChange = (newContent) => {
-    setContent(newContent); // 更新内容
-  };
-
-  return (
-    <div>
-      {/* 将历史内容传递给 NewsEditor */}
-      <NewsEditor content={content} getContent={handleContentChange} />
-      {/* 其他代码 */}
-    </div>
-  );
 
   const navigate = useNavigate()
   const handleSave = (auditState) => {
@@ -199,13 +191,20 @@ export default function NewsAdd(props) {
         items={[{ title: 'Home' }, { title: 'List' }, { title: 'App' }]}
       />
       <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-        <Title level={2} style={{ margin: '16px 0' }}>
-          撰写新闻
-        </Title>
-        <Space>
-          <Button>Cancel</Button>
-          <Button type="primary">Submit</Button>
-        </Space>
+      <Space align="center">
+    <Button
+      icon={<LeftOutlined />}
+      type="text"
+      onClick={() => navigate(-1)}
+    />
+    <Title level={2} style={{ margin:'16px 0' }}>更新新闻</Title>
+  </Space>
+
+  {/* 右边：按钮组 */}
+  <Space>
+    <Button>Cancel</Button>
+    <Button type="primary">Submit</Button>
+  </Space>
       </Space>
       <Steps current={current} items={items} />
       <div>{steps[current].content}</div>
