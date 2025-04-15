@@ -158,13 +158,13 @@ export default function NewsAdd(props) {
     setContent(newContent); // 更新内容
   };
 
-  return (
-    <div>
-      {/* 将历史内容传递给 NewsEditor */}
-      <NewsEditor content={content} getContent={handleContentChange} />
-      {/* 其他代码 */}
-    </div>
-  );
+  // return (
+  //   <div>
+  //     {/* 将历史内容传递给 NewsEditor */}
+  //     <NewsEditor content={content} getContent={handleContentChange} />
+  //     {/* 其他代码 */}
+  //   </div>
+  // );
 
   const navigate = useNavigate()
   const handleSave = (auditState) => {

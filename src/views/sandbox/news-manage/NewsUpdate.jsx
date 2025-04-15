@@ -160,7 +160,7 @@ export default function NewsUpdate(props) {
 
   const navigate = useNavigate()
   const handleSave = (auditState) => {
-    axios.post('/news', {
+    axios.patch(`/news/${id}`, {
       ...formInfo,
       "content":content,
       "region": User.region?User.region:"全球",

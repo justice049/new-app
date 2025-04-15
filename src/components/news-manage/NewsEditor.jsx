@@ -10,6 +10,7 @@ export default function NewsEditor(props) {
   
   useEffect(() => {
     const html = props.content;
+    if(html===undefined) return
     const contentBlock = htmlToDraft(html);
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
