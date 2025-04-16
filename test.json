@@ -720,12 +720,40 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 0,
+      "auditState": 1,
       "createTime": 1744709106384,
       "star": 0,
       "view": 0,
       "publishState": 0,
       "id": 20
+    },
+    {
+      "title": "测试颜色",
+      "categoryId": 4,
+      "content": "<p><span style=\"color: rgb(247,218,100);background-color: rgb(84,172,210);\">事实上</span></p>\n",
+      "region": "全球",
+      "author": "admin",
+      "roleId": 1,
+      "auditState": 1,
+      "createTime": 1744714046007,
+      "star": 0,
+      "view": 0,
+      "publishState": 0,
+      "id": 21
+    },
+    {
+      "title": "励志轩ac了一道八百分的题",
+      "categoryId": 3,
+      "content": "<p>不错，看看实力找找定位</p>\n",
+      "region": "全球",
+      "author": "admin",
+      "roleId": 1,
+      "auditState": 1,
+      "createTime": 1744804622743,
+      "star": 0,
+      "view": 0,
+      "publishState": 0,
+      "id": 22
     }
   ]
 }
