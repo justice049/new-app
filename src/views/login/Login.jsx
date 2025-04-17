@@ -22,7 +22,7 @@ const ParticlesBackground = () => {
                     number: { value: 100 },
                     size: { value: 3 },
                     move: { enable: true, speed: 2 },
-                    color: { value: "#1890ff" },
+                    color: { value: "#a084ca" },
                     shape: { type: "circle" },
                     opacity: { value: 0.5 },
                 },
