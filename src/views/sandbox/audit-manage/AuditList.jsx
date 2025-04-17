@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { Table,Button,Tag } from'antd'
+import { Table,Button,Tag,notification } from'antd'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { render } from 'nprogress'
@@ -20,7 +20,7 @@ export default function AuditList() {
       title: '新闻标题',
       dataIndex: 'title',
       render:(title,item)=>{
-        return <a href='#/news-manage/preview/${item.id}'>{title}</a>
+        return <a href={`#/news-manage/preview/${item.id}`}>{title}</a>
       }
     },
     {
@@ -48,18 +48,51 @@ export default function AuditList() {
       render:(item)=>{
         return <div>
           {
-            item.auditState===1&&<Button>撤销</Button>
+            item.auditState===1&&<Button onClick={()=>handleRervert(item)}>撤销</Button>
           }
           {
-            item.auditState===2&&<Button danger>发布</Button>
+            item.auditState===2&&<Button danger onClick={()=>handlePublish(item)}>发布</Button>
           }
           {
-            item.auditState===3&&<Button type='primary'>更新</Button>
+            item.auditState===3&&<Button type='primary' onClick={()=>handleUpdate(item)}>更新</Button>
           }
         </div> 
       }
     },
   ];
+
+  const handleRervert = (item)=>{
+    //先把数据从本地列表中移除
+    setdataSource(dataSource.filter(data=>data.id!==item.id))
+    // 补丁示更新后端数据
+    axios.patch(`/news/${item.id}`,{
+      auditState:0
+    }).then(res=>{
+      notification.info({
+        message: `通知`,
+        description: `您可以到草稿箱查看您的新闻`,
+        placement: 'bottomRight',
+      })
+    })
+  }
+
+  const handleUpdate = (item)=>{
+     props.history.push(`/news-manage/update/${item.id}`)
+  }
+
+  const handlePublish = (item)=>{
+    axios.patch(`/news/${item.id}`, {
+      "publishState": 2,
+    }).then((res) => {
+      navigate('/publish-manage/published')
+     notification.info({
+      message:`通知`,
+      description:
+      `您可以到[发布管理/已发布]中查看您的新闻`,
+      placement: 'bottomRight',
+    })
+  }) 
+  }
 
   return (
     <div>
