@@ -636,11 +636,11 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 1,
+      "auditState": 2,
       "createTime": 1744622992078,
       "star": 0,
       "view": 0,
-      "publishState": 0,
+      "publishState": 2,
       "id": 12
     },
     {
@@ -762,7 +762,7 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 1,
+      "auditState": 3,
       "createTime": 1744859378395,
       "star": 0,
       "view": 0,
@@ -782,6 +782,20 @@
       "view": 0,
       "publishState": 0,
       "id": 24
+    },
+    {
+      "title": "钢蛋-区域管理员",
+      "categoryId": 1,
+      "content": "<p>哦哦哦</p>\n",
+      "region": "南极洲",
+      "author": "钢蛋",
+      "roleId": 2,
+      "auditState": 1,
+      "createTime": 1744881786689,
+      "star": 0,
+      "view": 0,
+      "publishState": 0,
+      "id": 25
     }
   ]
 }

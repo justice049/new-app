@@ -4,10 +4,13 @@ import { Table,Button,Tag,notification } from'antd'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { render } from 'nprogress'
+import { useNavigate } from 'react-router-dom'
+
 
 export default function AuditList() {
   const [dataSource,setdataSource] = useState([])
   const {username} = JSON.parse(localStorage.getItem('token'))
+  const navigate = useNavigate()
   useEffect(()=>{
     axios(`/news?author=${username}&auditState_ne=0&publishState_lte=1&_expand=category`).then(res=>{
       console.log(res.data)
@@ -77,7 +80,7 @@ export default function AuditList() {
   }
 
   const handleUpdate = (item)=>{
-     props.history.push(`/news-manage/update/${item.id}`)
+     navigate(`/news-manage/update/${item.id}`)
   }
 
   const handlePublish = (item)=>{
@@ -100,7 +103,7 @@ export default function AuditList() {
               //一页显示几条数据
               pageSize:5
         }}
-        rowKey={item=>item.id}
+        rowKey="id"
         />
     </div>
   )
