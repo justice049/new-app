@@ -452,8 +452,8 @@
     },
     {
       "id": 6,
-      "title": "生活理财",
-      "value": "生活理财"
+      "title": "生活理财333",
+      "value": "生活理财333"
     }
   ],
   "regions": [
@@ -734,11 +734,11 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 1,
+      "auditState": 2,
       "createTime": 1744714046007,
       "star": 0,
       "view": 0,
-      "publishState": 0,
+      "publishState": 1,
       "id": 21
     },
     {
