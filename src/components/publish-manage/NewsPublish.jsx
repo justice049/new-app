@@ -26,7 +26,7 @@ function NewsPublish(props) {
           title: '操作',
           render:(record)=>{
             return <div>
-               <Button/>
+               {props.button(record.id)}
             </div>
           }
         },
