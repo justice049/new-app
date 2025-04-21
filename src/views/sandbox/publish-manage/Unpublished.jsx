@@ -8,7 +8,6 @@ export default function Unpublished() {
   const [dataSource,setDataSource] = useState([])
   useEffect(() => {
     axios(`/news?author=${username}&publishState=1&_expand=category`).then(res=>{
-      // console.log(res.data)
       setDataSource(res.data)
     })
   },[username])

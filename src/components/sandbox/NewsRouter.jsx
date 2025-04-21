@@ -36,7 +36,7 @@ const LocalRouterMap = {
   '/news-manage/update/:id':NewsUpdate,
   '/audit-manage/audit': Audit,
   '/audit-manage/list': AuditList,
-  'publish-manage/published': Published,
+  '/publish-manage/published': Published,
   '/publish-manage/unpublished': Unpublished,
   '/publish-manage/sunset': Sunset,
 }
