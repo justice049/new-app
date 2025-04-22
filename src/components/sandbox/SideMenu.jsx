@@ -11,6 +11,7 @@ import {
   FormOutlined,
   HomeOutlined,
 } from '@ant-design/icons';
+import { connect } from 'react-redux';
 import './index.css';
 import { useLocation } from'react-router-dom';
 
@@ -28,7 +29,7 @@ const iconMap = {
   发布管理: <UploadOutlined />,
 };
 
-function SideMenu() {
+function SideMenu(props) {
   const [menu, setMenu] = useState([]);
   const location = useLocation(); // 获取当前的路径
 
@@ -92,7 +93,7 @@ if (Array.isArray(role.rights)) {
   //分割字符串
   const openKeys = ['/' + location.pathname.split('/')[1]];
   return (
-    <Sider trigger={null} collapsible>
+    <Sider trigger={null} collapsible collapsed={props.isCollapsed}>
       <div style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
         <div className="logo">新闻发布系统</div>
         <div style={{ flex: 1, overflow: 'auto' }}>
@@ -110,4 +111,9 @@ if (Array.isArray(role.rights)) {
   );
 }
 
-export default SideMenu;
+const mapStateToProps = ({CollApsedReducer:{isCollapsed}})=>({
+    isCollapsed
+
+})
+
+export default connect(mapStateToProps)(SideMenu);

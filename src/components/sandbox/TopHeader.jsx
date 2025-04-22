@@ -8,17 +8,22 @@ import { DownOutlined, SmileOutlined } from '@ant-design/icons'
 import { Avatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 //从Layout组件中解构Header组件
 const { Header } = Layout
-function TopHeader() {
+function TopHeader(props) {
+  console.log(props)
   //v6的写法
 const navigate = useNavigate()
 
   const [collapsed, setCollapsed] = useState(false)
   //定义changeCollapsed函数，用于展开/收起侧边栏,通过取反实现
   const changeCollapsed = () => {
-    setCollapsed(!collapsed)
+    // 改变state的isCollapsed的值
+    // setCollapsed(!collapsed)
+    // console.log(props)
+    props.changeCollapsed()
   }
   const { token } = theme.useToken() // 获取主题 token
  
@@ -116,7 +121,7 @@ const navigate = useNavigate()
         type="text"
         //展开/收起侧边栏，绑定onClick事件
         icon={
-          collapsed ? (
+          props.isCollapsed ? (
             <MenuUnfoldOutlined onClick={changeCollapsed} />
           ) : (
             <MenuFoldOutlined onClick={changeCollapsed} />
@@ -133,4 +138,18 @@ const navigate = useNavigate()
   )
 }
 
-export default TopHeader
+const mapStateToProps = ({CollApsedReducer:{isCollapsed}})=>{
+  return{
+    isCollapsed
+  }
+}
+
+const mapDispatchToProps ={
+    changeCollapsed(){
+      return{
+        type:"change_collapsed"
+      }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(TopHeader)
