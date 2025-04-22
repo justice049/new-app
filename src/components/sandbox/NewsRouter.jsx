@@ -8,7 +8,7 @@ import RoleList from '../../views/sandbox/right-manage/RoleList'
 import { Navigate } from'react-router-dom'
 import Nopermission from '../../views/sandbox/nopermission/Nopermission'
 //引入antd
-import { theme, Layout, ConfigProvider } from 'antd'
+import { theme, Layout, ConfigProvider, Spin } from 'antd'
 import NewsAdd from '../../views/sandbox/news-manage/NewsAdd'
 import NewsDraft from '../../views/sandbox/news-manage/NewsDraft'
 import NewsCategory from '../../views/sandbox/news-manage/NewsCategory'
@@ -21,6 +21,7 @@ import NewsUpdate from '../../views/sandbox/news-manage/NewsUpdate'
 import NewsPreview from '../../views/sandbox/news-manage/NewsPreview'
 import { useEffect, useState } from'react'
 import axios from 'axios'
+import { connect } from "react-redux";
 
 //创建一个本地的路由映射表
 const LocalRouterMap = {
@@ -41,7 +42,7 @@ const LocalRouterMap = {
   '/publish-manage/sunset': Sunset,
 }
 
-export default function NewsRouter() {
+function NewsRouter(props) {
   // 后端返回的路由映射表
   const [BackRouteList, setBackRouteList] = useState([])
   useEffect(() => {
@@ -75,6 +76,7 @@ export default function NewsRouter() {
   }
 
   return (
+    <Spin size="large" spinning={props.isLoading}>
     <Routes>
       {/* 动态渲染路由 */}
       {BackRouteList.map((item) => {
@@ -99,5 +101,12 @@ export default function NewsRouter() {
         <Route path="*" element={<Nopermission />} />
       )}
     </Routes>
+    </Spin>
   )
 }
+
+const mapStateToProps = ({LoadingReducer:{isLoading}})=>({
+  isLoading
+})
+
+export default connect(mapStateToProps)(NewsRouter)
