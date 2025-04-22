@@ -113,7 +113,8 @@ if (Array.isArray(role.rights)) {
 
 const mapStateToProps = ({CollApsedReducer:{isCollapsed}})=>({
     isCollapsed
-
 })
+
+//  使用 connect() 获取 Redux 中的 isCollapsed 状态
 
 export default connect(mapStateToProps)(SideMenu);

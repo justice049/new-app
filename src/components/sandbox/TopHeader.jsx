@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 //从Layout组件中解构Header组件
 const { Header } = Layout
 function TopHeader(props) {
-  console.log(props)
+  // console.log(props)
   //v6的写法
 const navigate = useNavigate()
 
