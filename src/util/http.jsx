@@ -1,5 +1,5 @@
 import axios from "axios";
-import store from "../redux/store";
+import {store} from "../redux/store";
 // 对axios做全局配置
 axios.defaults.baseURL = "http://localhost:300"
 

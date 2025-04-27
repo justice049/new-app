@@ -26,6 +26,7 @@
     "react-router-dom": "^7.4.0",
     "react-tsparticles": "^2.12.2",
     "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
     "router": "^2.1.0",
     "sass": "^1.86.0",
     "tsparticles": "^3.8.1",
