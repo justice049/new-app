@@ -649,12 +649,13 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 0,
+      "auditState": 2,
       "createTime": 1744637255620,
       "star": 0,
       "view": 0,
-      "publishState": 0,
-      "id": 16
+      "publishState": 2,
+      "id": 16,
+      "publishTime": 1745758838601
     },
     {
       "title": "肘学长断言冷水澡+辣条+高强度运动有助于感冒恢复",
@@ -691,12 +692,13 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 1,
+      "auditState": 2,
       "createTime": 1744709106384,
       "star": 0,
       "view": 0,
-      "publishState": 0,
-      "id": 20
+      "publishState": 2,
+      "id": 20,
+      "publishTime": 1745757067209
     },
     {
       "title": "测试颜色",
@@ -720,12 +722,13 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 1,
+      "auditState": 2,
       "createTime": 1744804622743,
       "star": 0,
       "view": 0,
-      "publishState": 0,
-      "id": 22
+      "publishState": 2,
+      "id": 22,
+      "publishTime": 1745758819901
     },
     {
       "title": "测试审核",
@@ -734,8 +737,8 @@
       "region": "全球",
       "author": "admin",
       "roleId": 1,
-      "auditState": 3,
-      "createTime": 1744859378395,
+      "auditState": 0,
+      "createTime": 1745758825894,
       "star": 0,
       "view": 0,
       "publishState": 0,
@@ -762,11 +765,11 @@
       "region": "南极洲",
       "author": "钢蛋",
       "roleId": 2,
-      "auditState": 1,
+      "auditState": 2,
       "createTime": 1744881786689,
       "star": 0,
       "view": 0,
-      "publishState": 0,
+      "publishState": 1,
       "id": 25
     }
   ]

@@ -1,31 +1,86 @@
-import React from 'react';
-import { Button } from "antd";
+import React, { useEffect } from 'react'
 import 'axios'
+import { Card, Col, Row, List } from 'antd'
+import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import { Avatar } from 'antd';
 import axios from 'axios';
+import { useState } from'react'
+const { Meta } = Card;
 
 function Home() {
-    const ajax = ()=>{
-        //拿取数据
-        // _embed
-        axios.get("http://localhost:3000/posts?_embed=comments").then(res=>{
-            console.log(res.data)
-        })
-        // _expand
-        // axios.get("http://localhost:3000/comments?_expand=post").then(res=>{
-        //     console.log(res.data)
-        // })
-        // // 插入数据
-        // axios.post("http://localhost:3000/posts",{
-        //     id:1,
-        //     title:"hello",
-        //     author:"lizhi"
-        // })
-    }
-    return (
-        <div>
-           <Button type='primary' onClick={ajax}>Button</Button>
-        </div>
-    );
+    const [viewList, setviewList] = useState([])
+    const [starList, setstarList] = useState([])
+    useEffect(()=>{
+       axios.get("http://localhost:3000/news?publishState=2&_expand=category&_sort=view&_order=desc&_limit=6").then(res=>{
+        setviewList(res.data)
+       }).catch(err => {
+        console.error('Request failed', err)
+      })
+    },[])
+    useEffect(()=>{
+        axios.get("http://localhost:3000/news?publishState=2&_expand=category&_sort=star&_order=desc&_limit=6").then(res=>{
+         setstarList(res.data)
+        }).catch(err => {
+         console.error('Request failed', err)
+       })
+     },[])
+     const {username,region,role:{roleName}} = JSON.parse(localStorage.getItem('token'))
+  return (
+    <div>
+      <Row gutter={16}>
+        <Col span={8}>
+          <Card title="用户最常浏览" variant="border">
+            <List
+              size="small"
+              dataSource={viewList}
+              renderItem={(item) => <List.Item>
+                <a href={`#/news-manage/preview/${item.id}`}>{item.title}</a>
+                </List.Item>}
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card title="用户点赞最多" variant="border">
+            <List
+              size="small"
+              dataSource={starList}
+              renderItem={(item) => <List.Item><a href={`#/news-manage/preview/${item.id}`}>{item.title}</a></List.Item>}
+            />
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card
+            cover={
+              <img
+                alt="example"
+                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+              />
+            }
+            actions={[
+              <SettingOutlined key="setting" />,
+              <EditOutlined key="edit" />,
+              <EllipsisOutlined key="ellipsis" />,
+            ]}
+          >
+            <Meta
+              avatar={
+                <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
+              }
+              title={username}
+              description={
+                <div>
+                    <b>{region?region:'全球'}</b>
+                    <span style={{
+                        paddingLeft:"30px" 
+                    }}>{roleName}</span> 
+                </div>
+              }
+            />
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  )
 }
 
-export default Home;
+export default Home

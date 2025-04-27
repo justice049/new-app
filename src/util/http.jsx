@@ -1,7 +1,7 @@
 import axios from "axios";
 import {store} from "../redux/store";
 // 对axios做全局配置
-axios.defaults.baseURL = "http://localhost:300"
+axios.defaults.baseURL = "http://localhost:3000"
 
 
 // const instance = axios.create();
