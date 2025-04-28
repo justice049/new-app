@@ -1,59 +1,101 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import 'axios'
 import { Card, Col, Row, List } from 'antd'
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { Avatar } from 'antd';
-import axios from 'axios';
-import echarts from 'echarts';
-import { useState } from'react'
-const { Meta } = Card;
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  SettingOutlined,
+} from '@ant-design/icons'
+import { Avatar } from 'antd'
+import axios from 'axios'
+import * as Echarts from 'echarts'
+// 把所有东西都导进打模块中
+import { useState } from 'react'
+import _ from 'lodash'
+const { Meta } = Card
 
 function Home() {
-    const [viewList, setviewList] = useState([])
-    const [starList, setstarList] = useState([])
-    useEffect(()=>{
-       axios.get("http://localhost:3000/news?publishState=2&_expand=category&_sort=view&_order=desc&_limit=6").then(res=>{
+  const [viewList, setviewList] = useState([])
+  const [starList, setstarList] = useState([])
+
+  const barRef = useRef(null)
+
+  useEffect(() => {
+    axios
+      .get(
+        'http://localhost:3000/news?publishState=2&_expand=category&_sort=view&_order=desc&_limit=6'
+      )
+      .then((res) => {
         setviewList(res.data)
-       }).catch(err => {
+      })
+      .catch((err) => {
         console.error('Request failed', err)
       })
-    },[])
-    useEffect(()=>{
-        axios.get("http://localhost:3000/news?publishState=2&_expand=category&_sort=star&_order=desc&_limit=6").then(res=>{
-         setstarList(res.data)
-        }).catch(err => {
-         console.error('Request failed', err)
-       })
-     },[])
-     useEffect(()=>{
-        var myChart = echarts.init(document.getElementById('main'));
+  }, [])
+  useEffect(() => {
+    axios
+      .get(
+        'http://localhost:3000/news?publishState=2&_expand=category&_sort=star&_order=desc&_limit=6'
+      )
+      .then((res) => {
+        setstarList(res.data)
+      })
+      .catch((err) => {
+        console.error('Request failed', err)
+      })
+  }, [])
+  useEffect(() => {
+    axios
+      .get('/news?publishState=2&_expand=category')
+      .then((res) => {
+        console.log(res.data)
+        renderBarView(_.groupBy(res.data, (item) => item.category.title))
+      })
+      .catch((err) => {
+        console.error('Request failed', err)
+      })
+
+    const renderBarView = (obj) => {
+      var myChart = Echarts.init(barRef.current)
 
       // 指定图表的配置项和数据
       var option = {
         title: {
-          text: 'ECharts 入门示例'
+          text: '新闻分类图示',
         },
         tooltip: {},
         legend: {
-          data: ['销量']
+          data: ['数量'],
         },
         xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+          data: Object.keys(obj),
         },
-        yAxis: {},
+        yAxis: {
+            // 让显示全是整数
+            minInterval: 1
+        },
         series: [
           {
-            name: '销量',
+            name: '数量',
             type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
-          }
-        ]
-      };
+            // 把数组映射成长度
+            data: Object.values(obj).map((item) => item.length),
+          },
+        ],
+      }
+     // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option)
+    return () => {
+        myChart.dispose()
+      }
+    }
+  }, [])
 
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
-     },[])
-     const {username,region,role:{roleName}} = JSON.parse(localStorage.getItem('token'))
+  const {
+    username,
+    region,
+    role: { roleName },
+  } = JSON.parse(localStorage.getItem('token'))
   return (
     <div>
       <Row gutter={16}>
@@ -62,9 +104,11 @@ function Home() {
             <List
               size="small"
               dataSource={viewList}
-              renderItem={(item) => <List.Item>
-                <a href={`#/news-manage/preview/${item.id}`}>{item.title}</a>
-                </List.Item>}
+              renderItem={(item) => (
+                <List.Item>
+                  <a href={`#/news-manage/preview/${item.id}`}>{item.title}</a>
+                </List.Item>
+              )}
             />
           </Card>
         </Col>
@@ -73,7 +117,11 @@ function Home() {
             <List
               size="small"
               dataSource={starList}
-              renderItem={(item) => <List.Item><a href={`#/news-manage/preview/${item.id}`}>{item.title}</a></List.Item>}
+              renderItem={(item) => (
+                <List.Item>
+                  <a href={`#/news-manage/preview/${item.id}`}>{item.title}</a>
+                </List.Item>
+              )}
             />
           </Card>
         </Col>
@@ -98,10 +146,14 @@ function Home() {
               title={username}
               description={
                 <div>
-                    <b>{region?region:'全球'}</b>
-                    <span style={{
-                        paddingLeft:"30px" 
-                    }}>{roleName}</span> 
+                  <b>{region ? region : '全球'}</b>
+                  <span
+                    style={{
+                      paddingLeft: '30px',
+                    }}
+                  >
+                    {roleName}
+                  </span>
                 </div>
               }
             />
@@ -109,11 +161,14 @@ function Home() {
         </Col>
       </Row>
 
-      <div id="main" style={{
-        height:"400px",
-        marginTop:"30px",
-      }}></div>
-
+      <div
+        ref={barRef}
+        style={{
+          width: '100%',
+          height: '400px',
+          marginTop: '30px',
+        }}
+      ></div>
     </div>
   )
 }
