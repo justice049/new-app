@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import 'axios'
 import { Card, Col, Row, List } from 'antd'
 import {
   EditOutlined,
@@ -48,12 +47,12 @@ function Home() {
     axios
       .get('/news?publishState=2&_expand=category')
       .then((res) => {
-        console.log(res.data)
         renderBarView(_.groupBy(res.data, (item) => item.category.title))
       })
-      .catch((err) => {
-        console.error('Request failed', err)
-      })
+      return ()=>{
+        window.onresize = null
+      }
+      }, [])
 
     const renderBarView = (obj) => {
       var myChart = Echarts.init(barRef.current)
@@ -69,6 +68,11 @@ function Home() {
         },
         xAxis: {
           data: Object.keys(obj),
+          axisLabel: {
+            rotate: "60",
+            //强制显示
+            interval: 0,
+          },
         },
         yAxis: {
             // 让显示全是整数
@@ -85,11 +89,14 @@ function Home() {
       }
      // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option)
+    window.onresize =()=>{
+        //每次自动触发
+        myChart.resize()
+    } 
     return () => {
         myChart.dispose()
       }
     }
-  }, [])
 
   const {
     username,
