@@ -1,108 +1,181 @@
-import React, { useEffect, useRef } from 'react'
-import { Card, Col, Row, List } from 'antd'
+import React, { useEffect, useRef, useState } from 'react';
+import { Card, Col, Row, List, Drawer } from 'antd';
 import {
   EditOutlined,
   EllipsisOutlined,
   SettingOutlined,
-} from '@ant-design/icons'
-import { Avatar } from 'antd'
-import axios from 'axios'
-import * as Echarts from 'echarts'
-// 把所有东西都导进打模块中
-import { useState } from 'react'
-import _ from 'lodash'
-const { Meta } = Card
+} from '@ant-design/icons';
+import { Avatar } from 'antd';
+import axios from 'axios';
+import * as Echarts from 'echarts';
+import _ from 'lodash';
+
+const { Meta } = Card;
 
 function Home() {
-  const [viewList, setviewList] = useState([])
-  const [starList, setstarList] = useState([])
+  const [viewList, setviewList] = useState([]);
+  const [starList, setstarList] = useState([]);
+  const [visible, setvisible] = useState(false);
 
-  const barRef = useRef(null)
+  const barRef = useRef(null);
+  const pieRef = useRef(null);
 
   useEffect(() => {
     axios
       .get(
-        'http://localhost:3000/news?publishState=2&_expand=category&_sort=view&_order=desc&_limit=6'
+        '/news?publishState=2&_expand=category&_sort=view&_order=desc&_limit=6'
       )
       .then((res) => {
-        setviewList(res.data)
+        setviewList(res.data);
       })
       .catch((err) => {
-        console.error('Request failed', err)
-      })
-  }, [])
+        console.error('Request failed', err);
+      });
+  }, []);
+
   useEffect(() => {
     axios
       .get(
-        'http://localhost:3000/news?publishState=2&_expand=category&_sort=star&_order=desc&_limit=6'
+        '/news?publishState=2&_expand=category&_sort=star&_order=desc&_limit=6'
       )
       .then((res) => {
-        setstarList(res.data)
+        setstarList(res.data);
       })
       .catch((err) => {
-        console.error('Request failed', err)
-      })
-  }, [])
+        console.error('Request failed', err);
+      });
+  }, []);
+
   useEffect(() => {
-    axios
-      .get('/news?publishState=2&_expand=category')
-      .then((res) => {
-        renderBarView(_.groupBy(res.data, (item) => item.category.title))
-      })
-      return ()=>{
-        window.onresize = null
-      }
-      }, [])
+    let barCleanup;
+    let barResizeHandler;
 
-    const renderBarView = (obj) => {
-      var myChart = Echarts.init(barRef.current)
-
-      // 指定图表的配置项和数据
-      var option = {
-        title: {
-          text: '新闻分类图示',
-        },
-        tooltip: {},
-        legend: {
-          data: ['数量'],
-        },
-        xAxis: {
-          data: Object.keys(obj),
-          axisLabel: {
-            rotate: "60",
-            //强制显示
-            interval: 0,
-          },
-        },
-        yAxis: {
-            // 让显示全是整数
-            minInterval: 1
-        },
-        series: [
-          {
-            name: '数量',
-            type: 'bar',
-            // 把数组映射成长度
-            data: Object.values(obj).map((item) => item.length),
-          },
-        ],
+    const fetchDataAndRender = async () => {
+      try {
+        const res = await axios.get('/news?publishState=2&_expand=category');
+        if (barRef.current) {
+          barCleanup = renderBarView(
+            _.groupBy(res.data, (item) => item.category.title)
+          );
+          barResizeHandler = () => {
+            if (barCleanup) {
+              const myChart = Echarts.getInstanceByDom(barRef.current);
+              if (myChart) {
+                myChart.resize();
+              }
+            }
+          };
+          window.addEventListener('resize', barResizeHandler);
+        }
+      } catch (err) {
+        console.error('Request failed', err);
       }
-     // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option)
-    window.onresize =()=>{
-        //每次自动触发
-        myChart.resize()
-    } 
+    };
+
+    fetchDataAndRender();
+
     return () => {
-        myChart.dispose()
+      if (typeof barCleanup === 'function') {
+        barCleanup();
       }
-    }
+      if (barResizeHandler) {
+        window.removeEventListener('resize', barResizeHandler);
+      }
+    };
+  }, []);
 
+  const renderBarView = (obj) => {
+    if (!barRef.current) return;
+    var myChart = Echarts.init(barRef.current);
+
+    var option = {
+      title: {
+        text: '新闻分类图示',
+      },
+      tooltip: {},
+      legend: {
+        data: ['数量'],
+      },
+      xAxis: {
+        data: Object.keys(obj),
+        axisLabel: {
+          rotate: 60,
+          interval: 0,
+        },
+      },
+      yAxis: {
+        minInterval: 1,
+      },
+      series: [
+        {
+          name: '数量',
+          type: 'bar',
+          data: Object.values(obj).map((item) => item.length),
+        },
+      ],
+    };
+
+    myChart.setOption(option);
+
+    return () => {
+      myChart.dispose();
+    };
+  };
+
+  const renderPieView = (data) => {
+    if (!pieRef.current) return;
+    const myChart = Echarts.init(pieRef.current);
+
+    const option = {
+      title: {
+        text: '个人新闻分类',
+        subtext: '按分类统计',
+        left: 'center',
+      },
+      tooltip: {
+        trigger: 'item',
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+      },
+      series: [
+        {
+          name: '新闻数量',
+          type: 'pie',
+          radius: '50%',
+          data: data,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
+            },
+          },
+        },
+      ],
+    };
+
+    myChart.setOption(option);
+
+    const resizeHandler = () => {
+      myChart.resize();
+    };
+    window.addEventListener('resize', resizeHandler);
+
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+      myChart.dispose();
+    };
+  };
+
+  const tokenData = localStorage.getItem('token');
   const {
-    username,
-    region,
-    role: { roleName },
-  } = JSON.parse(localStorage.getItem('token'))
+    username = '',
+    region = '',
+    role: { roleName = '' } = {},
+  } = tokenData ? JSON.parse(tokenData) : {};
+
   return (
     <div>
       <Row gutter={16}>
@@ -141,7 +214,33 @@ function Home() {
               />
             }
             actions={[
-              <SettingOutlined key="setting" />,
+              <SettingOutlined
+                key="setting"
+                onClick={async () => {
+                  setvisible(true);
+                  setTimeout(async () => {
+                    const token = JSON.parse(localStorage.getItem('token'));
+                    const username = token?.username;
+
+                    try {
+                      const res = await axios.get(
+                        `/news?author=${username}&publishState=2&_expand=category`
+                      );
+                      const groupedData = _.groupBy(
+                        res.data,
+                        (item) => item.category.title
+                      );
+                      const pieData = Object.keys(groupedData).map((key) => ({
+                        name: key,
+                        value: groupedData[key].length,
+                      }));
+                      renderPieView(pieData);
+                    } catch (err) {
+                      console.error('Failed to fetch pie data', err);
+                    }
+                  }, 300);
+                }}
+              />,
               <EditOutlined key="edit" />,
               <EllipsisOutlined key="ellipsis" />,
             ]}
@@ -168,6 +267,26 @@ function Home() {
         </Col>
       </Row>
 
+      <Drawer
+        width="500px"
+        title="个人新闻分类"
+        placement="right"
+        closable={true}
+        onClose={() => {
+          setvisible(false);
+        }}
+        visible={visible}
+      >
+        <div
+          ref={pieRef}
+          style={{
+            width: '100%',
+            height: '400px',
+            marginTop: '30px',
+          }}
+        ></div>
+      </Drawer>
+
       <div
         ref={barRef}
         style={{
@@ -177,7 +296,7 @@ function Home() {
         }}
       ></div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
