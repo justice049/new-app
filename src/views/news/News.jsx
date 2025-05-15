@@ -5,6 +5,7 @@ import { Row, Col, List } from 'antd'
 import { Typography} from 'antd';
 import _ from 'lodash'
 import { useState } from'react'
+import { data } from 'react-router-dom';
 const { Link } = Typography;
 const { Title } = Typography;
 
@@ -38,11 +39,11 @@ export default function News() {
           <Card title={item[0]} variant="border" hoverable={true}>
             <List
               size="small"
-              dataSource={[111, 222, 333]}
+              dataSource={item[1]}
               pagination={{
                 pageSize: 3,
               }}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
+              renderItem={data => <List.Item>{data.title}</List.Item>}
             />
           </Card>
         </Col>
