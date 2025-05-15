@@ -1,5 +1,5 @@
 //导入antd
-import { Layout, theme, Button,Menu } from 'antd'
+import { Layout, theme, Button, Menu } from 'antd'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import { changeConfirmLocale } from 'antd/es/modal/locale'
@@ -15,7 +15,7 @@ const { Header } = Layout
 function TopHeader(props) {
   // console.log(props)
   //v6的写法
-const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const [collapsed, setCollapsed] = useState(false)
   //定义changeCollapsed函数，用于展开/收起侧边栏,通过取反实现
@@ -26,13 +26,24 @@ const navigate = useNavigate()
     props.changeCollapsed()
   }
   const { token } = theme.useToken() // 获取主题 token
- 
+
   const { colorBgContainer, borderRadiusLG } = token
 
   //使用户名动态渲染
   // const {role:{roleName},username} = JSON.parse(localStorage.getItem('token'))
   //使用户名动态渲染
-  const {role:{roleName},username} = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象 
+  // const {role:{roleName},username} = JSON.parse(localStorage.getItem('token')) || {}; // 确保 tokenData 是一个对象
+
+  let username = ''
+  let roleName = ''
+
+  try {
+    const token = JSON.parse(localStorage.getItem('token'))
+    username = token?.username || '游客'
+    roleName = token?.role?.roleName || '未知角色'
+  } catch (e) {
+    console.error('解析 token 出错:', e)
+  }
 
   const items = [
     {
@@ -82,7 +93,6 @@ const navigate = useNavigate()
       },
     },
   ]
-  
 
   return (
     <Header
@@ -93,7 +103,9 @@ const navigate = useNavigate()
     >
       <div style={{ float: 'right' }}>
         {/* 定义欢迎语 */}
-        <span>欢迎<span style={{color:'blue'}}>{username}</span>回来</span>
+        <span>
+          欢迎<span style={{ color: 'blue' }}>{username}</span>回来
+        </span>
         {/* 定义下拉菜单 */}
         <Dropdown
           menu={{
@@ -103,8 +115,8 @@ const navigate = useNavigate()
           arrow
         >
           <Space size={16} wrap>
-          <Avatar src={'/头像.jpg'} />
-        </Space>
+            <Avatar src={'/头像.jpg'} />
+          </Space>
           {/* <Button>🥺</Button> */}
         </Dropdown>
         <Dropdown
@@ -114,7 +126,6 @@ const navigate = useNavigate()
           placement="bottom"
           arrow
         ></Dropdown>
-
       </div>
 
       <Button
@@ -138,18 +149,18 @@ const navigate = useNavigate()
   )
 }
 
-const mapStateToProps = ({CollApsedReducer:{isCollapsed}})=>{
-  return{
-    isCollapsed
+const mapStateToProps = ({ CollApsedReducer: { isCollapsed } }) => {
+  return {
+    isCollapsed,
   }
 }
 
-const mapDispatchToProps ={
-    changeCollapsed(){
-      return{
-        type:"change_collapsed"
-      }
+const mapDispatchToProps = {
+  changeCollapsed() {
+    return {
+      type: 'change_collapsed',
     }
+  },
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(TopHeader)
+export default connect(mapStateToProps, mapDispatchToProps)(TopHeader)
