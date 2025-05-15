@@ -4,6 +4,7 @@ import { Card, Space } from 'antd'
 import { Row, Col, List } from 'antd'
 import { Typography} from 'antd';
 import _ from 'lodash'
+import { useState } from'react'
 const { Link } = Typography;
 const { Title } = Typography;
 
@@ -31,9 +32,10 @@ export default function News() {
         margin: '0 auto',
       }}
     >
-      <Row gutter={[16,16]}>
-        <Col span={8}>
-          <Card title="Card title" variant="border" hoverable={true}>
+      <Row gutter={[16,16]}>{
+        list.map(item =>
+          <Col span={8} key={item[0]}>
+          <Card title={item[0]} variant="border" hoverable={true}>
             <List
               size="small"
               dataSource={[111, 222, 333]}
@@ -44,66 +46,7 @@ export default function News() {
             />
           </Card>
         </Col>
-        <Col span={8}>
-          <Card title="Card title" variant="border" hoverable={true}>
-          <List
-              size="small"
-              dataSource={[111, 222, 333]}
-              pagination={{
-                pageSize: 3,
-              }}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
-            />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" variant="border" hoverable={true}>
-          <List
-              size="small"
-              dataSource={[111, 222, 333]}
-              pagination={{
-                pageSize: 3,
-              }}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
-            />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" variant="border" hoverable={true}>
-          <List
-              size="small"
-              dataSource={[111, 222, 333]}
-              pagination={{
-                pageSize: 3,
-              }}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
-            />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" variant="border" hoverable={true}>
-          <List
-              size="small"
-              dataSource={[111, 222, 333]}
-              pagination={{
-                pageSize: 3,
-              }}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
-            />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card title="Card title" variant="border" hoverable={true}>
-          <List
-              size="small"
-              dataSource={[111, 222, 333]}
-              pagination={{
-                pageSize: 3,
-              }}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
-            />
-          </Card>
-        </Col>
+        )}
       </Row>
     </div>
     </div>
